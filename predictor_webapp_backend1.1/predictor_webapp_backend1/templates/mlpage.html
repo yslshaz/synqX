@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fatigue Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Fatigue Predictor</h1>
+      <p class="sub">Enter the feature values, then click <b>Predict</b>.</p>
+    </header>
+
+    <section class="card">
+      <div id="formArea" class="grid"></div>
+
+      <div class="actions">
+        <button id="predictBtn" class="btn">Predict</button>
+        <button id="fillExampleBtn" class="btn btn-secondary" type="button">Fill example</button>
+        <span id="status" class="status"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Result</h2>
+      <div id="result" class="result muted">No prediction yet.</div>
+
+      <div id="probWrap" class="probWrap hidden">
+        <h3>Probabilities</h3>
+        <table class="table" id="probTable">
+          <thead><tr><th>Class</th><th>Probability</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <small>Served locally by Flask. (Pickle models should only be loaded from trusted sources.)</small>
+    </footer>
+  </main>
+
+<script>
+  const formArea = document.getElementById("formArea");
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
+  const probWrap = document.getElementById("probWrap");
+  const probBody = document.querySelector("#probTable tbody");
+
+  let schema = null;
+
+  // Auto-calculated features (still computed + sent)
+  const DERIVED = new Set(["Heart_Rate_Body_Temp", "Oxygen_Heart_Rate_Ratio"]);
+
+  // Hidden fields + their default values (still sent)
+  const HIDDEN_DEFAULTS = {
+    "Unnamed: 3": 1
+  };
+
+  // Hide from UI: Unnamed + BOTH derived fields
+  const HIDDEN_UI = new Set([
+    "Unnamed: 3",
+    "Heart_Rate_Body_Temp",
+    "Oxygen_Heart_Rate_Ratio"
+  ]);
+
+  function prettyLabel(name) {
+    return name.replaceAll("_", " ");
+  }
+
+  function setStatus(msg, kind="") {
+    statusEl.textContent = msg;
+    statusEl.className = "status " + kind;
+  }
+
+  function numValFromEl(el) {
+    if (!el) return null;
+    const v = el.value;
+    if (v === "" || v === null || v === undefined) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function getInputValue(featureName) {
+    // If field is hidden, it won't exist as an input element
+    const el = document.getElementById(featureName);
+    return el ? el.value : null;
+  }
+
+  function setInputValue(featureName, value) {
+    const el = document.getElementById(featureName);
+    if (!el) return; // hidden derived fields won't be in DOM
+    el.value = (value === null || value === undefined || !Number.isFinite(value)) ? "" : value;
+  }
+
+  function computeDerived() {
+    const hrEl = document.getElementById("Heart_Rate");
+    const btEl = document.getElementById("Body_Temperature");
+    const oxEl = document.getElementById("Blood_Oxygen");
+
+    const hr = numValFromEl(hrEl);
+    const bt = numValFromEl(btEl);
+    const ox = numValFromEl(oxEl);
+
+    let heartRateBodyTemp = null;
+    let oxygenHeartRateRatio = null;
+
+    if (hr !== null && bt !== null) heartRateBodyTemp = hr * bt;
+    if (ox !== null && hr !== null && hr !== 0) oxygenHeartRateRatio = ox / hr;
+
+    return {
+      Heart_Rate_Body_Temp: heartRateBodyTemp,
+      Oxygen_Heart_Rate_Ratio: oxygenHeartRateRatio
+    };
+  }
+
+  function attachDerivedListeners() {
+    ["Heart_Rate", "Body_Temperature", "Blood_Oxygen"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => {
+        // If you ever decide to show derived fields again, this keeps them updated.
+        const d = computeDerived();
+        setInputValue("Heart_Rate_Body_Temp", d.Heart_Rate_Body_Temp);
+        setInputValue("Oxygen_Heart_Rate_Ratio", d.Oxygen_Heart_Rate_Ratio);
+      });
+    });
+  }
+
+ async function loadSchema() {
+    const res = await fetch("/schema");
+    schema = await res.json();
+
+    formArea.innerHTML = "";
+
+    // CONFIGURATION: Adjusted to your specific midpoints and decimal requirements
+    const sliderConfig = {
+      "Heart_Rate":       { min: 60, max: 180, step: 1, value: 120, unit: "bpm" },
+      "Body_Temperature": { min: 35.0, max: 39.0, step: 0.1, value: 37.0, unit: "°C" },
+      "Blood_Oxygen":     { min: 90, max: 100, step: 1, value: 95, unit: "%" }
+    };
+
+    for (const f of schema.features) {
+      if (HIDDEN_UI.has(f)) continue;
+
+      const wrap = document.createElement("div");
+      wrap.className = "field";
+      wrap.style.marginBottom = "20px"; // Spacing between sliders
+
+      // --- 1. Top Row: Label and Live Value ---
+      const topRow = document.createElement("div");
+      topRow.style.display = "flex";
+      topRow.style.justifyContent = "space-between";
+      topRow.style.marginBottom = "8px";
+      topRow.style.color = "#ffffff"; // Force white text for dark mode
+
+      const label = document.createElement("label");
+      label.textContent = prettyLabel(f) + ":";
+      label.setAttribute("for", f);
+      label.style.fontWeight = "bold";
+
+      const valDisplay = document.createElement("span");
+      valDisplay.style.fontWeight = "bold";
+      valDisplay.id = f + "_display"; // unique ID to find it easily later
+
+      topRow.appendChild(label);
+      topRow.appendChild(valDisplay);
+      wrap.appendChild(topRow);
+
+      // --- 2. The Slider Input ---
+      const input = document.createElement("input");
+      input.id = f;
+      input.name = f;
+      input.style.width = "100%"; // Full width
+      input.style.cursor = "pointer";
+
+      // Apply Slider Config or Defaults
+      const config = sliderConfig[f];
+      if (config) {
+        input.type = "range";
+        input.min = config.min;
+        input.max = config.max;
+        input.step = config.step;
+        input.value = config.value; // Default midpoint
+        
+        // Initial text set
+        valDisplay.textContent = `${input.value} ${config.unit}`;
+
+        // Update text on slide
+        input.addEventListener("input", (e) => {
+          valDisplay.textContent = `${e.target.value} ${config.unit}`;
+        });
+      } else {
+        // Fallback for unexpected fields
+        input.type = "number";
+        input.step = "any";
+        input.placeholder = "Enter number";
+      }
+
+      wrap.appendChild(input);
+
+      // --- 3. Bottom Row: Min/Max Guides (Visual Aid) ---
+      if (config) {
+        const guideRow = document.createElement("div");
+        guideRow.style.display = "flex";
+        guideRow.style.justifyContent = "space-between";
+        guideRow.style.fontSize = "12px";
+        guideRow.style.color = "#888"; // Muted grey
+        guideRow.style.marginTop = "4px";
+
+        const minSpan = document.createElement("span");
+        minSpan.textContent = config.min;
+        const maxSpan = document.createElement("span");
+        maxSpan.textContent = config.max;
+
+        guideRow.appendChild(minSpan);
+        guideRow.appendChild(maxSpan);
+        wrap.appendChild(guideRow);
+      }
+
+      formArea.appendChild(wrap);
+    }
+
+    // Re-attach listeners for the 'Derived' fields logic (HR * Temp etc.)
+    attachDerivedListeners();
+  }
+
+  function getPayload() {
+    const payload = {};
+
+    // Always include hidden defaults
+    for (const [k, v] of Object.entries(HIDDEN_DEFAULTS)) {
+      payload[k] = v;
+    }
+
+    // Include values for visible features
+    for (const f of schema.features) {
+      if (HIDDEN_UI.has(f)) continue; // handled separately (derived/defaults)
+      const el = document.getElementById(f);
+      payload[f] = el ? el.value : "";
+    }
+
+    // Compute + include derived features even though they are hidden
+    const d = computeDerived();
+    payload["Heart_Rate_Body_Temp"] = d.Heart_Rate_Body_Temp ?? "";
+    payload["Oxygen_Heart_Rate_Ratio"] = d.Oxygen_Heart_Rate_Ratio ?? "";
+
+    return payload;
+  }
+
+  function fillExample() {
+    const ex = {
+      "Heart_Rate": 82,
+      "Body_Temperature": 36.7,
+      "Blood_Oxygen": 97
+    };
+
+    for (const f of schema.features) {
+      if (HIDDEN_UI.has(f)) continue;
+      const el = document.getElementById(f);
+      if (el) {
+        el.value = (ex[f] ?? 0);
+        // Dispatch 'input' event so the text readout updates instantly
+        el.dispatchEvent(new Event('input')); 
+      }
+    }
+  }
+
+  function renderProbs(probabilities) {
+    probBody.innerHTML = "";
+    const entries = Object.entries(probabilities).sort((a,b)=>b[1]-a[1]);
+    for (const [cls, p] of entries) {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      td1.textContent = cls;
+      const td2 = document.createElement("td");
+      td2.textContent = (p * 100).toFixed(2) + "%";
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      probBody.appendChild(tr);
+    }
+    probWrap.classList.remove("hidden");
+  }
+
+  async function predict() {
+    setStatus("Predicting…");
+    resultEl.className = "result muted";
+    resultEl.textContent = "Working…";
+    probWrap.classList.add("hidden");
+
+    const res = await fetch("/predict", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(getPayload())
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      setStatus("Error", "bad");
+      resultEl.className = "result bad";
+      resultEl.textContent = data.error + (data.missing ? (" Missing: " + data.missing.join(", ")) : "");
+      return;
+    }
+
+    setStatus("Done", "good");
+    resultEl.className = "result good";
+    resultEl.textContent = "Prediction: " + data.prediction;
+
+    if (data.probabilities) renderProbs(data.probabilities);
+  }
+
+  document.getElementById("predictBtn").addEventListener("click", predict);
+  document.getElementById("fillExampleBtn").addEventListener("click", fillExample);
+
+  loadSchema().then(()=>setStatus("Ready", "good")).catch(e=>{
+    setStatus("Failed to load schema", "bad");
+    resultEl.className = "result bad";
+    resultEl.textContent = String(e);
+  });
+</script>
+
+</body>
+</html>
