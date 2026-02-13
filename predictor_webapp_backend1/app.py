@@ -8,6 +8,8 @@ import joblib
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 
 def _ensure_numpy_core_aliases() -> None:
@@ -66,7 +68,22 @@ if not FEATURES:
 
 CLASSES = list(getattr(model, "classes_", []))
 
+
+
 app = Flask(__name__)
+# Configure Flask-SQLAlchemy to use the same SQLite DB as backend/database.py
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///synq.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Import models so they are registered with Flask-SQLAlchemy
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'backend'))
+from backend import models
+
+# Ensure all tables exist (auto-create if missing)
+with app.app_context():
+    db.create_all()
 
 
 @app.get("/")
@@ -81,7 +98,57 @@ def mlpage():
 def mlpage_html():
     return render_template("mlpage.html")
 
-
+@app.route('/api/athletes', methods=['GET', 'POST'])
+def athletes_endpoint():
+    if request.method == 'GET':
+        athletes = db.session.query(models.Athlete).all()
+        result = []
+        for a in athletes:
+            result.append({
+                'athlete_id': a.id,
+                'athlete_name': a.name,
+                'heart_rate': getattr(a, 'heart_rate', None),
+                'body_temperature': getattr(a, 'body_temperature', None),
+                'blood_oxygen': getattr(a, 'blood_oxygen', None),
+                'fatigue_status': getattr(a, 'fatigue_status', None),
+                'notes': getattr(a, 'notes', None),
+                'position': a.position,
+                'height_cm': a.height_cm,
+                'weight_kg': a.weight_kg,
+                'age': a.age,
+                'created_at': a.created_at.isoformat() if a.created_at else None
+            })
+        return jsonify(result)
+    elif request.method == 'POST':
+        data = request.get_json()
+        athlete = models.Athlete(
+            name=data.get('athlete_name'),
+            position=None,
+            height_cm=None,
+            weight_kg=None,
+            age=None
+        )
+        # Set extra fields if present
+        for field in ['heart_rate', 'body_temperature', 'blood_oxygen', 'fatigue_status', 'notes']:
+            if hasattr(athlete, field) and field in data:
+                setattr(athlete, field, data[field])
+        db.session.add(athlete)
+        db.session.commit()
+        db.session.refresh(athlete)
+        return jsonify({
+            'athlete_id': athlete.id,
+            'athlete_name': athlete.name,
+            'heart_rate': getattr(athlete, 'heart_rate', None),
+            'body_temperature': getattr(athlete, 'body_temperature', None),
+            'blood_oxygen': getattr(athlete, 'blood_oxygen', None),
+            'fatigue_status': getattr(athlete, 'fatigue_status', None),
+            'notes': getattr(athlete, 'notes', None),
+            'position': athlete.position,
+            'height_cm': athlete.height_cm,
+            'weight_kg': athlete.weight_kg,
+            'age': athlete.age,
+            'created_at': athlete.created_at.isoformat() if athlete.created_at else None
+        }), 201
 
 
 @app.get("/schema")

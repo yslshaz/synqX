@@ -1,6 +1,16 @@
-from database import engine
+import sys
+import os
 from sqlalchemy import inspect
-import models
+
+if __package__ is None or __package__ == '':
+    # Script execution: add parent to sys.path and use relative imports
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from database import engine
+    import models
+else:
+    # Module execution: use relative imports
+    from .database import engine
+    import models
 
 def init_db():
     print(" Connecting to Database...")

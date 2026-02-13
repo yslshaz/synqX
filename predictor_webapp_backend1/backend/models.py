@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 from sqlalchemy import String, Integer, Float, ForeignKey, DateTime, JSON, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from backend.database import Base
 
 # Helper function to generate UUIDs
 def generate_uuid():

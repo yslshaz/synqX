@@ -17,7 +17,7 @@ Usage (from project root):
 from __future__ import annotations
 import argparse
 from sqlalchemy import text
-from database import engine, SessionLocal
+from backend.database import engine, SessionLocal
 
 
 def status(n=10):

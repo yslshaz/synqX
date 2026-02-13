@@ -1,5 +1,5 @@
-from database import SessionLocal
-from models import Athlete
+from backend.database import SessionLocal
+from backend.models import Athlete
 
 db = SessionLocal()
 
