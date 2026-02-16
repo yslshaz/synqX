@@ -2668,7 +2668,7 @@
 
     // Navigation
     function navigateToPage(pageName) {
-      if (pageName === 'dashboard') { window.location.href = '/mlpage'; return; }
+      // Only onboarding (features) page redirects to mlpage.html now
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
       
@@ -2682,6 +2682,10 @@
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', () => {
         const pageName = link.getAttribute('data-page');
+        if (pageName === 'onboarding') {
+          window.location.href = '/mlpage';
+          return;
+        }
         navigateToPage(pageName);
       });
     });
@@ -2915,102 +2919,24 @@
       }
       
       const athleteCards = filteredData.map(athlete => {
-        const statusClass = athlete.fatigue_status === 'Normal' ? 'status-normal' : 
-                           athlete.fatigue_status === 'Moderate' ? 'status-elevated' : 'status-fatigued';
-        const initials = getPlayerInitials(athlete.athlete_name);
-        const fatiguePercent = calculateFatiguePercentage(athlete.heart_rate, athlete.body_temperature, athlete.blood_oxygen);
-        const energyPercent = calculateEnergyPercentage(fatiguePercent);
-        const energyClass = athlete.fatigue_status === 'Normal' ? 'optimal' : 
-                           athlete.fatigue_status === 'Moderate' ? 'moderate' : 'fatigued';
-        
-        let sphereColor1, sphereColor2;
-        if (athlete.fatigue_status === 'Normal') {
-          sphereColor1 = '#34D399';
-          sphereColor2 = '#10B981';
-        } else if (athlete.fatigue_status === 'Moderate') {
-          sphereColor1 = '#FBBF24';
-          sphereColor2 = '#F59E0B';
-        } else {
-          sphereColor1 = '#F87171';
-          sphereColor2 = '#EF4444';
-        }
-        
+        // Show basic info from DB: id, name, position, height, weight, age, created_at
         return `
-          <div class="athlete-card" data-athlete-id="${athlete.athlete_id}" data-status="${athlete.fatigue_status}">
+          <div class="athlete-card" data-athlete-id="${athlete.id}">
             <div class="athlete-header">
               <div class="athlete-info-section">
-                <div class="athlete-sphere">
-                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <filter id="ring-glow-${athlete.athlete_id}">
-                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                        <feMerge>
-                          <feMergeNode in="coloredBlur"/>
-                          <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                      </filter>
-                      <filter id="text-glow-${athlete.athlete_id}">
-                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-                        <feMerge>
-                          <feMergeNode in="coloredBlur"/>
-                          <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                      </filter>
-                      <linearGradient id="energy-grad-${athlete.athlete_id}" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:${sphereColor1};stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:${sphereColor2};stop-opacity:0.8" />
-                      </linearGradient>
-                    </defs>
-                    
-                    <circle cx="50" cy="50" r="38" fill="#000000" opacity="0.9"/>
-                    <circle cx="50" cy="50" r="34" fill="none" stroke="${sphereColor2}" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="50" cy="50" r="30" fill="none" stroke="${sphereColor1}" stroke-width="0.5" opacity="0.4"/>
-                    
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4.5" opacity="0.3"/>
-                    
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#energy-grad-${athlete.athlete_id})" stroke-width="4.5" opacity="1" filter="url(#ring-glow-${athlete.athlete_id})" stroke-linecap="round" stroke-dasharray="${(energyPercent / 100) * 283} 283" transform="rotate(-90 50 50)">
-                      <animate attributeName="stroke-dasharray" from="0 283" to="${(energyPercent / 100) * 283} 283" dur="1.5s" fill="freeze"/>
-                    </circle>
-                    
-                    <circle cx="50" cy="5" r="2" fill="${sphereColor1}" opacity="${energyPercent > 90 ? '1' : '0.3'}"/>
-                    <circle cx="95" cy="50" r="2" fill="${sphereColor1}" opacity="${energyPercent > 70 ? '1' : '0.3'}"/>
-                    <circle cx="50" cy="95" r="2" fill="${sphereColor1}" opacity="${energyPercent > 50 ? '1' : '0.3'}"/>
-                    <circle cx="5" cy="50" r="2" fill="${sphereColor1}" opacity="${energyPercent > 30 ? '1' : '0.3'}"/>
-                    
-                    <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="'Orbitron', 'Montserrat', sans-serif" font-size="24" font-weight="900" fill="#FFFFFF" filter="url(#text-glow-${athlete.athlete_id})" letter-spacing="1">
-                      ${initials}
-                    </text>
-                  </svg>
-                </div>
                 <div class="athlete-info">
-                  <div class="athlete-name">${athlete.athlete_name}</div>
-                  <div class="athlete-role">Athlete</div>
+                  <div class="athlete-name">${athlete.name}</div>
+                  <div class="athlete-role">${athlete.position || 'N/A'}</div>
                 </div>
               </div>
-              <div class="status-badge ${statusClass}">${athlete.fatigue_status}</div>
             </div>
-            <div class="energy-bar-section">
-              <div class="energy-label">
-                <span>Energy Level</span>
-                <span class="energy-percentage">${energyPercent}%</span>
-              </div>
-              <div class="energy-bar">
-                <div class="energy-bar-fill ${energyClass}" style="width: ${energyPercent}%;"></div>
-              </div>
-            </div>
-            <div class="athlete-vitals">
-              <div class="vital-row">
-                <span class="vital-row-label">Heart Rate</span>
-                <span class="vital-row-value">${athlete.heart_rate} bpm</span>
-              </div>
-              <div class="vital-row">
-                <span class="vital-row-label">Temperature</span>
-                <span class="vital-row-value">${athlete.body_temperature.toFixed(1)}°C</span>
-              </div>
-              <div class="vital-row">
-                <span class="vital-row-label">Blood Oxygen</span>
-                <span class="vital-row-value">${athlete.blood_oxygen}%</span>
-              </div>
+            <div class="athlete-details">
+              <div class="athlete-row"><span class="athlete-label">ID:</span> <span class="athlete-value">${athlete.id}</span></div>
+              <div class="athlete-row"><span class="athlete-label">Position:</span> <span class="athlete-value">${athlete.position || 'N/A'}</span></div>
+              <div class="athlete-row"><span class="athlete-label">Height:</span> <span class="athlete-value">${athlete.height_cm !== undefined && athlete.height_cm !== null ? athlete.height_cm + ' cm' : 'N/A'}</span></div>
+              <div class="athlete-row"><span class="athlete-label">Weight:</span> <span class="athlete-value">${athlete.weight_kg !== undefined && athlete.weight_kg !== null ? athlete.weight_kg + ' kg' : 'N/A'}</span></div>
+              <div class="athlete-row"><span class="athlete-label">Age:</span> <span class="athlete-value">${athlete.age !== undefined && athlete.age !== null ? athlete.age : 'N/A'}</span></div>
+              <div class="athlete-row"><span class="athlete-label">Created At:</span> <span class="athlete-value">${athlete.created_at || 'N/A'}</span></div>
             </div>
           </div>
         `;
@@ -3637,7 +3563,7 @@
     }
 
     function openAthleteProfile(athleteId) {
-      const athlete = athletesData.find(a => a.athlete_id === athleteId);
+      const athlete = athletesData.find(a => a.id === athleteId);
       if (!athlete) return;
 
       currentAthlete = athlete;

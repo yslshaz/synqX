@@ -72,7 +72,7 @@ CLASSES = list(getattr(model, "classes_", []))
 
 app = Flask(__name__)
 # Configure Flask-SQLAlchemy to use the same SQLite DB as backend/database.py
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///synq.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/USER/Desktop/SYNQX/predictor_webapp_backend1.1/predictor_webapp_backend1/synq.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -105,8 +105,8 @@ def athletes_endpoint():
         result = []
         for a in athletes:
             result.append({
-                'athlete_id': a.id,
-                'athlete_name': a.name,
+                'id': a.id,
+                'name': a.name,
                 'heart_rate': getattr(a, 'heart_rate', None),
                 'body_temperature': getattr(a, 'body_temperature', None),
                 'blood_oxygen': getattr(a, 'blood_oxygen', None),
@@ -136,8 +136,8 @@ def athletes_endpoint():
         db.session.commit()
         db.session.refresh(athlete)
         return jsonify({
-            'athlete_id': athlete.id,
-            'athlete_name': athlete.name,
+            'id': athlete.id,
+            'name': athlete.name,
             'heart_rate': getattr(athlete, 'heart_rate', None),
             'body_temperature': getattr(athlete, 'body_temperature', None),
             'blood_oxygen': getattr(athlete, 'blood_oxygen', None),
