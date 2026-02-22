@@ -1,3 +1,6 @@
+from sqlalchemy import event
+from sqlalchemy.orm import Session
+# ...existing code...
 import uuid
 import enum
 from datetime import datetime
@@ -46,6 +49,15 @@ class Athlete(Base):
         cascade="all, delete-orphan"
     )
 
+    # One-to-one: latest vital reading (optional, for direct access)
+    latest_vital_reading: Mapped["VitalReading"] = relationship(
+        "VitalReading",
+        primaryjoin="Athlete.id==foreign(VitalReading.athlete_id)",
+        uselist=False,
+        viewonly=True,
+        order_by="desc(VitalReading.timestamp)"
+    )
+
     fatigue_assessments: Mapped[List["FatigueAssessment"]] = relationship(
         back_populates="athlete",
         cascade="all, delete-orphan"
@@ -88,6 +100,7 @@ class TrainingSession(Base):
 
     # --- CHECKLIST ---
     exercises_planned: Mapped[Optional[list]] = mapped_column(JSON)
+
     exercises_completed: Mapped[Optional[list]] = mapped_column(JSON)
 
     # --- LOAD METRICS ---
@@ -172,5 +185,27 @@ class FatigueAssessment(Base):
     # ✅ Correct relationships
     athlete: Mapped["Athlete"] = relationship(back_populates="fatigue_assessments")
     vital_reading: Mapped["VitalReading"] = relationship()
+
+# --- SQLAlchemy event: create vital_reading on new athlete ---
+@event.listens_for(Athlete, 'after_insert')
+def create_vital_reading_on_athlete_insert(mapper, connection, target):
+    """
+    Automatically create a VitalReading row for every new Athlete.
+    Uses default values if not provided.
+    """
+    session = Session(bind=connection)
+    # Try to get values from the target if present, else use defaults
+    heart_rate = getattr(target, 'heart_rate', 0)
+    body_temperature = getattr(target, 'body_temperature', 0.0)
+    spo2 = getattr(target, 'spo2', 0)
+    vital = VitalReading(
+        athlete_id=target.id,
+        heart_rate=heart_rate if heart_rate is not None else 0,
+        body_temperature=body_temperature if body_temperature is not None else 0.0,
+        spo2=spo2 if spo2 is not None else 0
+    )
+    session.add(vital)
+    session.commit()
+    session.close()
 
 

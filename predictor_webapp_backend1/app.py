@@ -11,7 +11,6 @@ from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-
 def _ensure_numpy_core_aliases() -> None:
     """
     Compatibility shim: some pickles created with NumPy 2.x may reference 'numpy._core'.
@@ -63,8 +62,8 @@ model = load_model(MODEL_PATH)
 FEATURES = list(getattr(model, "feature_names_in_", []))
 if not FEATURES:
     # Fallback: if the model doesn't have feature_names_in_, you must fill this manually.
-    FEATURES = ["Heart_Rate", "Body_Temperature", "Blood_Oxygen", "Unnamed: 3",
-                "Heart_Rate_Body_Temp", "Oxygen_Heart_Rate_Ratio"]
+    FEATURES = ["Heart_Rate", "Body_Temperature", "spo2", "Unnamed: 3",
+                "Heart_Rate_Body_Temp", "spo2_Heart_Rate_Ratio"]
 
 CLASSES = list(getattr(model, "classes_", []))
 
@@ -104,13 +103,71 @@ def athletes_endpoint():
         athletes = db.session.query(models.Athlete).all()
         result = []
         for a in athletes:
+            # Fetch latest vital reading for this athlete
+            latest_vital = (
+                db.session.query(models.VitalReading)
+                .filter_by(athlete_id=a.id)
+                .order_by(models.VitalReading.timestamp.desc())
+                .first()
+            )
+            heart_rate = latest_vital.heart_rate if latest_vital else None
+            body_temperature = latest_vital.body_temperature if latest_vital else None
+            spo2 = latest_vital.spo2 if latest_vital else None
+
+            # ML prediction and DB linkage (Step 1)
+            fatigue_status = None
+            fatigue_assessment = None
+            if latest_vital and heart_rate is not None and body_temperature is not None and spo2 is not None:
+                # Prepare features for ML model
+                features = {}
+                for f in FEATURES:
+                    if f == "Heart_Rate":
+                        features[f] = heart_rate
+                    elif f == "Body_Temperature":
+                        features[f] = body_temperature
+                    elif f == "spo2":
+                        features[f] = spo2
+                    elif f == "Heart_Rate_Body_Temp":
+                        features[f] = heart_rate * body_temperature
+                    elif f == "spo2_Heart_Rate_Ratio":
+                        features[f] = spo2 / heart_rate if heart_rate else 0
+                    else:
+                        features[f] = 0
+                # ML prediction
+                X = pd.DataFrame([features], columns=FEATURES)
+                pred = model.predict(X)[0]
+                fatigue_status = str(pred)
+                # Link to DB: create or update FatigueAssessment
+                fatigue_assessment = (
+                    db.session.query(models.FatigueAssessment)
+                    .filter_by(athlete_id=a.id, vital_reading_id=latest_vital.id)
+                    .first()
+                )
+                if fatigue_assessment:
+                    fatigue_assessment.fatigue_status = fatigue_status
+                    db.session.commit()
+                else:
+                    fatigue_assessment = models.FatigueAssessment(
+                        athlete_id=a.id,
+                        vital_reading_id=latest_vital.id,
+                        fatigue_status=fatigue_status
+                    )
+                    db.session.add(fatigue_assessment)
+                    db.session.commit()
+            # If no valid vitals, do not create assessment
+
+            # Step 2: Return fatigue_status and DB linkage
             result.append({
                 'id': a.id,
                 'name': a.name,
-                'heart_rate': getattr(a, 'heart_rate', None),
-                'body_temperature': getattr(a, 'body_temperature', None),
-                'blood_oxygen': getattr(a, 'blood_oxygen', None),
-                'fatigue_status': getattr(a, 'fatigue_status', None),
+                'player_name': a.name,  # for frontend compatibility
+                'player_id': a.id,      # for frontend compatibility
+                'heart_rate': heart_rate,
+                'body_temperature': body_temperature,
+                'spo2': spo2,
+                'fatigue_status': fatigue_assessment.fatigue_status if fatigue_assessment else None,
+                'fatigue_assessment_id': fatigue_assessment.id if fatigue_assessment else None,
+                'vital_reading_id': latest_vital.id if latest_vital else None,
                 'notes': getattr(a, 'notes', None),
                 'position': a.position,
                 'height_cm': a.height_cm,
@@ -128,21 +185,29 @@ def athletes_endpoint():
             weight_kg=None,
             age=None
         )
-        # Set extra fields if present
-        for field in ['heart_rate', 'body_temperature', 'blood_oxygen', 'fatigue_status', 'notes']:
-            if hasattr(athlete, field) and field in data:
-                setattr(athlete, field, data[field])
         db.session.add(athlete)
         db.session.commit()
         db.session.refresh(athlete)
+
+        # Create initial vital reading if vitals are provided
+        heart_rate = data.get('heart_rate', 0)
+        body_temperature = data.get('body_temperature', 0.0)
+        spo2 = data.get('spo2', 0)
+        vital = models.VitalReading(
+            athlete_id=athlete.id,
+            heart_rate=heart_rate,
+            body_temperature=body_temperature,
+            spo2=spo2
+        )
+        db.session.add(vital)
+        db.session.commit()
+
         return jsonify({
             'id': athlete.id,
             'name': athlete.name,
-            'heart_rate': getattr(athlete, 'heart_rate', None),
-            'body_temperature': getattr(athlete, 'body_temperature', None),
-            'blood_oxygen': getattr(athlete, 'blood_oxygen', None),
-            'fatigue_status': getattr(athlete, 'fatigue_status', None),
-            'notes': getattr(athlete, 'notes', None),
+            'heart_rate': heart_rate,
+            'body_temperature': body_temperature,
+            'spo2': spo2,
             'position': athlete.position,
             'height_cm': athlete.height_cm,
             'weight_kg': athlete.weight_kg,
@@ -219,6 +284,25 @@ def predict():
         result["probabilities"] = {str(c): float(p) for c, p in zip(CLASSES, probs)}
 
     return jsonify(result)
+
+@app.route('/api/athletes/bulk_delete', methods=['POST'])
+def bulk_delete_athletes():
+    """
+    Delete multiple athletes and cascade delete their vital readings and fatigue assessments.
+    Accepts JSON: { "athlete_ids": [1,2,3] }
+    """
+    data = request.get_json()
+    athlete_ids = data.get('athlete_ids', [])
+    if not athlete_ids:
+        return jsonify({'error': 'No athlete IDs provided.'}), 400
+    for athlete_id in athlete_ids:
+        db.session.query(models.FatigueAssessment).filter_by(athlete_id=athlete_id).delete()
+        db.session.query(models.VitalReading).filter_by(athlete_id=athlete_id).delete()
+        db.session.query(models.Athlete).filter_by(id=athlete_id).delete()
+    db.session.commit()
+    return jsonify({'message': f'Deleted athletes: {athlete_ids}'}), 200
+
+
 
 
 if __name__ == "__main__":

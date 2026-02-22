@@ -388,7 +388,7 @@
       margin: 0;
     }
 
-    .active-players-badge {
+    .active-athletes-badge {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -398,14 +398,14 @@
       border-radius: 10px;
     }
 
-    .active-players-text {
+    .active-athletes-text {
       font-size: 13px;
       color: rgba(255, 255, 255, 0.6);
       font-weight: 500;
       letter-spacing: -0.2px;
     }
 
-    .active-players-text strong {
+    .active-athletes-text strong {
       color: #FFFFFF;
       font-weight: 700;
       font-size: 16px;
@@ -774,8 +774,8 @@
       border-color: rgba(255, 255, 255, 0.15);
     }
     
-    /* Player List Page */
-    .player-list-header {
+    /* athlete List Page */
+    .athlete-list-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -784,7 +784,7 @@
       gap: 16px;
     }
     
-    .add-player-button {
+    .add-athlete-button {
       background: #FFFFFF;
       color: #000000;
       border: none;
@@ -797,7 +797,7 @@
       letter-spacing: -0.2px;
     }
     
-    .add-player-button:hover {
+    .add-athlete-button:hover {
       background: rgba(255, 255, 255, 0.9);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
@@ -853,26 +853,38 @@
       color: #FFFFFF;
     }
     
-    .player-grid {
+    .athlete-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
     }
     
-    .player-card {
+    .athlete-card {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid transparent;
       border-radius: 24px;
       padding: 32px;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+        .athlete-card[data-status="Normal"] {
+          border-color: #10B981;
+          background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(255,255,255,0.05));
+        }
+        .athlete-card[data-status="Moderate"] {
+          border-color: #F59E0B;
+          background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(255,255,255,0.05));
+        }
+        .athlete-card[data-status="Fatigued"] {
+          border-color: #EF4444;
+          background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(255,255,255,0.05));
+        }
     }
 
-    .player-card::before {
+    .athlete-card::before {
       content: '';
       position: absolute;
       top: -2px;
@@ -886,7 +898,7 @@
       transition: opacity 0.4s ease;
     }
 
-    .player-card::after {
+    .athlete-card::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -899,72 +911,80 @@
       pointer-events: none;
     }
     
-    .player-card:hover {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-                  0 0 80px rgba(255, 255, 255, 0.1);
+    .athlete-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-10px) scale(1.04);
+      box-shadow: 0 0 60px 10px rgba(255,255,255,0.18),
+          0 0 120px 30px rgba(0,255,160,0.10),
+          0 20px 60px rgba(0, 0, 0, 0.5),
+          0 0 80px rgba(255, 255, 255, 0.18);
     }
 
-    .player-card:hover::before {
+    .athlete-card:hover::before {
       opacity: 1;
     }
 
-    .player-card[data-status="Normal"]:hover {
-      box-shadow: 0 20px 60px rgba(16, 185, 129, 0.4),
-                  0 0 100px rgba(16, 185, 129, 0.2),
-                  inset 0 0 60px rgba(16, 185, 129, 0.05);
-      border-color: rgba(16, 185, 129, 0.4);
+    .athlete-card[data-status="Normal"]:hover {
+      box-shadow: 0 0 80px 10px rgba(16, 185, 129, 0.45),
+          0 0 120px 30px rgba(16, 185, 129, 0.18),
+          0 20px 60px rgba(16, 185, 129, 0.25),
+          0 0 100px rgba(16, 185, 129, 0.2),
+          inset 0 0 60px rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.5);
     }
 
-    .player-card[data-status="Moderate"]:hover {
-      box-shadow: 0 20px 60px rgba(245, 158, 11, 0.4),
-                  0 0 100px rgba(245, 158, 11, 0.2),
-                  inset 0 0 60px rgba(245, 158, 11, 0.05);
-      border-color: rgba(245, 158, 11, 0.4);
+    .athlete-card[data-status="Moderate"]:hover {
+      box-shadow: 0 0 80px 10px rgba(245, 158, 11, 0.45),
+          0 0 120px 30px rgba(245, 158, 11, 0.18),
+          0 20px 60px rgba(245, 158, 11, 0.25),
+          0 0 100px rgba(245, 158, 11, 0.2),
+          inset 0 0 60px rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.5);
     }
 
-    .player-card[data-status="Fatigued"]:hover {
-      box-shadow: 0 20px 60px rgba(239, 68, 68, 0.4),
-                  0 0 100px rgba(239, 68, 68, 0.2),
-                  inset 0 0 60px rgba(239, 68, 68, 0.05);
-      border-color: rgba(239, 68, 68, 0.4);
+    .athlete-card[data-status="Fatigued"]:hover {
+      box-shadow: 0 0 80px 10px rgba(239, 68, 68, 0.45),
+          0 0 120px 30px rgba(239, 68, 68, 0.18),
+          0 20px 60px rgba(239, 68, 68, 0.25),
+          0 0 100px rgba(239, 68, 68, 0.2),
+          inset 0 0 60px rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.5);
     }
     
-    .player-header {
+    .athlete-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
 
-    .player-info-section {
+    .athlete-info-section {
       display: flex;
       align-items: center;
       gap: 16px;
       flex: 1;
     }
 
-    .player-sphere {
+    .athlete-sphere {
       width: 60px;
       height: 60px;
       flex-shrink: 0;
     }
 
-    .player-sphere svg {
+    .athlete-sphere svg {
       width: 100%;
       height: 100%;
       filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
     }
 
-    .player-info {
+    .athlete-info {
       flex: 1;
     }
     
-    .player-name {
+    .athlete-name {
       font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 700;
@@ -973,7 +993,7 @@
       margin-bottom: 4px;
     }
 
-    .player-role {
+    .athlete-role {
       font-size: 12px;
       color: rgba(255, 255, 255, 0.4);
       font-weight: 500;
@@ -1046,7 +1066,7 @@
       background: linear-gradient(90deg, #EF4444, #F87171);
     }
     
-    .player-vitals {
+    .athlete-vitals {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -1889,7 +1909,7 @@
       animation-delay: 1.3s;
     }
 
-    /* Left Position (Blood Oxygen - Electric Blue) */
+    /* Left Position (spo2 - Electric Blue) */
     .orbital-left {
       top: 50%;
       left: 50%;
@@ -1977,7 +1997,7 @@
     /* Enhanced button interactions */
     .primary-button:active,
     .secondary-button:active,
-    .add-player-button:active {
+    .add-athlete-button:active {
       animation: haptic-pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -2098,7 +2118,7 @@
       </div>
       <div class="vital-card"><span class="vital-icon">💨</span>
        <div class="vital-label">
-        Blood Oxygen
+        spo2
        </div>
        <div class="vital-sublabel">
         SpO₂ saturation
@@ -2146,12 +2166,12 @@
         👤
        </div>
        <div class="feature-content">
-        <h3>Player Profiles</h3>
+        <h3>athlete Profiles</h3>
         <p>Individual profiles with baseline metrics, current status, and personalized AI recommendations.</p>
        </div>
       </div>
      </div>
-     <div class="action-buttons"><button class="primary-button" onclick="navigateToPage('dashboard')">View Dashboard</button> <button class="secondary-button" onclick="navigateToPage('players')">Manage Players</button>
+     <div class="action-buttons"><button class="primary-button" onclick="navigateToPage('dashboard')">View Dashboard</button> <button class="secondary-button" onclick="navigateToPage('athletes')">Manage athletes</button>
      </div>
     </div>
    </main><!-- Dashboard Page -->
@@ -2165,11 +2185,11 @@
        <div class="section-header-left">
         <h2 class="section-title">Team Overview</h2>
        </div>
-       <div class="active-players-badge"><span class="active-players-text">Active Players: <strong id="total-players">0</strong></span>
+       <div class="active-athletes-badge"><span class="active-athletes-text">Active athletes: <strong id="total-athletes">0</strong></span>
        </div>
       </div>
       <div class="status-cards-grid">
-       <div class="status-card status-optimal" data-status="optimal" onclick="filterPlayersByStatus('Normal', event)">
+       <div class="status-card status-optimal" data-status="optimal" onclick="filterathletesByStatus('Normal', event)">
         <div class="status-card-inner">
          <div class="status-3d-icon">
           <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -2199,7 +2219,7 @@
          </div>
         </div>
        </div>
-       <div class="status-card status-moderate" data-status="moderate" onclick="filterPlayersByStatus('Moderate', event)">
+       <div class="status-card status-moderate" data-status="moderate" onclick="filterathletesByStatus('Moderate', event)">
         <div class="status-card-inner">
          <div class="status-3d-icon">
           <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -2229,7 +2249,7 @@
          </div>
         </div>
        </div>
-       <div class="status-card status-fatigued" data-status="fatigued" onclick="filterPlayersByStatus('Fatigued', event)">
+       <div class="status-card status-fatigued" data-status="fatigued" onclick="filterathletesByStatus('Fatigued', event)">
         <div class="status-card-inner">
          <div class="status-3d-icon">
           <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -2265,7 +2285,7 @@
       <h2 class="section-title">Performance Trends</h2>
       <p class="section-description">Historical metrics across training sessions</p>
       <div class="trend-container">
-       <div class="trend-controls"><button class="trend-tab active" data-metric="heart_rate">Heart Rate</button> <button class="trend-tab" data-metric="temperature">Temperature</button> <button class="trend-tab" data-metric="oxygen">Blood Oxygen</button>
+       <div class="trend-controls"><button class="trend-tab active" data-metric="heart_rate">Heart Rate</button> <button class="trend-tab" data-metric="temperature">Temperature</button> <button class="trend-tab" data-metric="spo2">spo2</button>
        </div>
        <div class="trend-chart">
         <div id="trend-display" class="trend-display">
@@ -2302,7 +2322,7 @@
        </div> Start Session <span class="button-subtitle">Begin live monitoring</span> </button> <button class="secondary-button action-large" onclick="openTeamAnalysis()"> <span class="button-icon">📊</span> Team Analysis <span class="button-subtitle">View detailed insights</span> </button>
      </div>
     </div>
-   </main><!-- Players List Page -->
+   </main><!-- athletes List Page -->
   <main id="athletes" class="page">
     <div class="page-content">
     <div class="athlete-list-header">
@@ -2320,7 +2340,7 @@
      </div>
     </div>
     </div>
-   </main><!-- Player Profile Page -->
+   </main><!-- athlete Profile Page -->
   <main id="athlete-profile" class="page">
     <div class="page-content">
     <div class="athlete-list-header" style="margin-bottom: 16px;">
@@ -2398,7 +2418,7 @@
           °C
          </text>
         </svg>
-       </div><!-- Left Orbital (Blood Oxygen - Cyan) -->
+       </div><!-- Left Orbital (spo2 - Cyan) -->
        <div class="orbital-data-ring orbital-left" style="cursor: pointer;">
         <svg class="orbital-svg" viewbox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><defs>
           <filter id="o2Glow">
@@ -2410,7 +2430,7 @@
           </filter>
          </defs> <g opacity="0.2">
           <circle cx="90" cy="90" r="70" fill="none" stroke="currentColor" stroke-width="12" />
-         </g> <circle cx="90" cy="90" r="70" fill="none" stroke="currentColor" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="110" stroke-linecap="round" filter="url(#o2Glow)" transform="rotate(-90 90 90)" id="o2-ring" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);" /> <text x="90" y="95" text-anchor="middle" font-family="Orbitron" font-size="32" font-weight="900" fill="#FFFFFF" id="profile-oxygen" style="pointer-events: none;">
+         </g> <circle cx="90" cy="90" r="70" fill="none" stroke="currentColor" stroke-width="12" stroke-dasharray="440" stroke-dashoffset="110" stroke-linecap="round" filter="url(#o2Glow)" transform="rotate(-90 90 90)" id="o2-ring" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);" /> <text x="90" y="95" text-anchor="middle" font-family="Orbitron" font-size="32" font-weight="900" fill="#FFFFFF" id="profile-spo2" style="pointer-events: none;">
           --
          </text> <text x="90" y="112" text-anchor="middle" font-family="Orbitron" font-size="10" font-weight="600" fill="rgba(255,255,255,0.6)" letter-spacing="2" style="pointer-events: none;">
           SpO₂
@@ -2431,9 +2451,9 @@
       </div>
       <canvas class="sparkline-canvas" id="sparkline-temp-canvas"></canvas>
      </div>
-     <div id="sparkline-oxygen" class="sparkline-container" style="color: #3B82F6; top: 50%; left: 5%; transform: translateY(-50%);">
+     <div id="sparkline-spo2" class="sparkline-container" style="color: #3B82F6; top: 50%; left: 5%; transform: translateY(-50%);">
       <div class="sparkline-title">
-       Oxygen Trend
+       spo2 Trend
       </div>
       <canvas class="sparkline-canvas" id="sparkline-o2-canvas"></canvas>
      </div><!-- Comparison Panels -->
@@ -2501,11 +2521,11 @@
       <div class="comparison-change neutral" id="temperature-change"><span class="comparison-arrow">→</span> <span>No change</span>
       </div>
      </div>
-     <div id="comparison-panel-oxygen" class="comparison-panel" style="color: #3B82F6; top: 50%; left: 8%; transform: translateY(-50%);">
+     <div id="comparison-panel-spo2" class="comparison-panel" style="color: #3B82F6; top: 50%; left: 8%; transform: translateY(-50%);">
       <div class="comparison-header">
        <div class="comparison-title">
-        Blood Oxygen
-       </div><button class="comparison-close" onclick="closeComparison('oxygen')">×</button>
+        spo2
+       </div><button class="comparison-close" onclick="closeComparison('spo2')">×</button>
       </div>
       <div class="comparison-stat">
        <div class="comparison-stat-label">
@@ -2516,7 +2536,7 @@
          <div class="comparison-value-label">
           BASELINE
          </div>
-         <div class="comparison-value-number" id="baseline-oxygen">
+         <div class="comparison-value-number" id="baseline-spo2">
           --
          </div>
         </div>
@@ -2524,18 +2544,18 @@
          <div class="comparison-value-label">
           CURRENT
          </div>
-         <div class="comparison-value-number" id="current-oxygen">
+         <div class="comparison-value-number" id="current-spo2">
           --
          </div>
         </div>
        </div>
       </div>
-      <div class="comparison-change neutral" id="oxygen-change"><span class="comparison-arrow">→</span> <span>No change</span>
+      <div class="comparison-change neutral" id="spo2-change"><span class="comparison-arrow">→</span> <span>No change</span>
       </div>
      </div>
     </div>
    </main>
-  </div><!-- Add/Edit Player Modal -->
+  </div><!-- Add/Edit athlete Modal -->
   <div class="modal-overlay" id="athlete-modal">
    <div class="modal">
     <div class="modal-header">
@@ -2552,7 +2572,7 @@
       <div class="slider-labels"><span>35.0</span> <span>39.0</span>
       </div>
      </div>
-     <div class="form-group"><label class="form-label" for="blood-oxygen">Blood Oxygen: <span id="blood-oxygen-value">95</span> %</label> <input type="range" id="blood-oxygen" class="form-slider" required min="90" max="100" value="95" step="1">
+     <div class="form-group"><label class="form-label" for="spo2">spo2: <span id="spo2-value">95</span> %</label> <input type="range" id="spo2" class="form-slider" required min="90" max="100" value="95" step="1">
       <div class="slider-labels"><span>90</span> <span>100</span>
       </div>
      </div>
@@ -2642,7 +2662,7 @@
     }
 
     // Data SDK Handler
-    // Fetch players from backend
+    // Fetch athletes from backend
     async function fetchAthletes() {
       try {
         const response = await fetch('/api/athletes');
@@ -2696,8 +2716,8 @@
       const heartRateValue = document.getElementById('heart-rate-value');
       const bodyTempSlider = document.getElementById('body-temp');
       const bodyTempValue = document.getElementById('body-temp-value');
-      const bloodOxygenSlider = document.getElementById('blood-oxygen');
-      const bloodOxygenValue = document.getElementById('blood-oxygen-value');
+      const spo2Slider = document.getElementById('spo2');
+      const spo2Value = document.getElementById('spo2-value');
 
       if (heartRateSlider && heartRateValue) {
         heartRateSlider.addEventListener('input', (e) => {
@@ -2711,9 +2731,9 @@
         });
       }
 
-      if (bloodOxygenSlider && bloodOxygenValue) {
-        bloodOxygenSlider.addEventListener('input', (e) => {
-          bloodOxygenValue.textContent = e.target.value;
+      if (spo2Slider && spo2Value) {
+        spo2Slider.addEventListener('input', (e) => {
+          spo2Value.textContent = e.target.value;
         });
       }
 
@@ -2727,7 +2747,7 @@
     });
 
     // Classification functions
-    function calculateFatigueStatus(heartRate, bodyTemp, bloodOxygen) {
+    function calculateFatigueStatus(heartRate, bodyTemp, spo2) {
       let hrClass = 0;
       let tempClass = 0;
       let o2Class = 0;
@@ -2740,9 +2760,9 @@
       else if (bodyTemp >= 37.3 && bodyTemp <= 37.5) tempClass = 1;
       else if (bodyTemp >= 37.6) tempClass = 2;
 
-      if (bloodOxygen >= 98) o2Class = 0;
-      else if (bloodOxygen >= 96 && bloodOxygen <= 97) o2Class = 1;
-      else if (bloodOxygen <= 95) o2Class = 2;
+      if (spo2 >= 98) o2Class = 0;
+      else if (spo2 >= 96 && spo2 <= 97) o2Class = 1;
+      else if (spo2 <= 95) o2Class = 2;
 
       const avgClass = (hrClass + tempClass + o2Class) / 3;
 
@@ -2751,7 +2771,7 @@
       return 'Fatigued';
     }
 
-    function calculateFatiguePercentage(heartRate, bodyTemp, bloodOxygen) {
+    function calculateFatiguePercentage(heartRate, bodyTemp, spo2) {
       let score = 0;
       let maxScore = 6;
       
@@ -2761,8 +2781,8 @@
       if (bodyTemp >= 37.6) score += 2;
       else if (bodyTemp >= 37.3) score += 1;
       
-      if (bloodOxygen <= 95) score += 2;
-      else if (bloodOxygen <= 97) score += 1;
+      if (spo2 <= 95) score += 2;
+      else if (spo2 <= 97) score += 1;
       
       return Math.round((score / maxScore) * 100);
     }
@@ -2771,7 +2791,7 @@
       return Math.max(0, 100 - fatiguePercent);
     }
 
-    function getPlayerInitials(name) {
+    function getathleteInitials(name) {
       if (!name) return '??';
       const parts = name.trim().split(' ');
       if (parts.length >= 2) {
@@ -2780,7 +2800,7 @@
       return name.substring(0, 2).toUpperCase();
     }
 
-    // Filter players by status
+    // Filter athletes by status
     function filterAthletesByStatus(status, event) {
       if (event) {
         const card = event.currentTarget || event.target.closest('.status-card');
@@ -2811,7 +2831,7 @@
       document.getElementById('athlete-form').reset();
       document.getElementById('heart-rate-value').textContent = '120';
       document.getElementById('body-temp-value').textContent = '37.0';
-      document.getElementById('blood-oxygen-value').textContent = '95';
+      document.getElementById('spo2-value').textContent = '95';
       document.getElementById('athlete-modal').classList.add('active');
     }
 
@@ -2840,16 +2860,16 @@
       const athleteName = document.getElementById('athlete-name').value;
       const heartRate = parseFloat(document.getElementById('heart-rate').value);
       const bodyTemp = parseFloat(document.getElementById('body-temp').value);
-      const bloodOxygen = parseFloat(document.getElementById('blood-oxygen').value);
+      const spo2 = parseFloat(document.getElementById('spo2').value);
       const notes = document.getElementById('notes').value;
 
-      const fatigueStatus = calculateFatigueStatus(heartRate, bodyTemp, bloodOxygen);
+      const fatigueStatus = calculateFatigueStatus(heartRate, bodyTemp, spo2);
 
       const athleteData = {
         athlete_name: athleteName,
         heart_rate: heartRate,
         body_temperature: bodyTemp,
-        blood_oxygen: bloodOxygen,
+        spo2: spo2,
         fatigue_status: fatigueStatus,
         notes: notes || ''
       };
@@ -2919,30 +2939,148 @@
       }
       
       const athleteCards = filteredData.map(athlete => {
-        // Show basic info from DB: id, name, position, height, weight, age, created_at
+        // Calculate fatigue and energy percent (logic from onboarding.html)
+        const fatiguePercent = (() => {
+          let score = 0;
+          let maxScore = 6;
+          if (athlete.heart_rate > 160) score += 2;
+          else if (athlete.heart_rate > 120) score += 1;
+          if (athlete.body_temperature >= 37.6) score += 2;
+          else if (athlete.body_temperature >= 37.3) score += 1;
+          if (athlete.spo2 <= 95) score += 2;
+          else if (athlete.spo2 <= 97) score += 1;
+          return Math.round((score / maxScore) * 100);
+        })();
+        const energyPercent = Math.max(0, 100 - fatiguePercent);
+        const energyClass = athlete.fatigue_status === 'Normal' ? 'optimal' : 
+                            athlete.fatigue_status === 'Moderate' ? 'moderate' : 'fatigued';
+        // SVG sphere color logic
+        let sphereColor1, sphereColor2;
+        if (athlete.fatigue_status === 'Normal') {
+          sphereColor1 = '#34D399';
+          sphereColor2 = '#10B981';
+        } else if (athlete.fatigue_status === 'Moderate') {
+          sphereColor1 = '#FBBF24';
+          sphereColor2 = '#F59E0B';
+        } else {
+          sphereColor1 = '#F87171';
+          sphereColor2 = '#EF4444';
+        }
+        // Get initials
+        function getAthleteInitials(name) {
+          if (!name) return '??';
+          const parts = name.trim().split(' ');
+          if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+          }
+          return name.substring(0, 2).toUpperCase();
+        }
+        const initials = getAthleteInitials(athlete.name);
+
+        // Status badge class
+        const statusClass = athlete.fatigue_status === 'Normal' ? 'status-normal' : 
+                            athlete.fatigue_status === 'Moderate' ? 'status-elevated' : 'status-fatigued';
+
         return `
           <div class="athlete-card" data-athlete-id="${athlete.id}">
             <div class="athlete-header">
               <div class="athlete-info-section">
+                <div class="athlete-sphere">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <filter id="ring-glow-${athlete.id}">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                      <filter id="text-glow-${athlete.id}">
+                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                      <linearGradient id="energy-grad-${athlete.id}" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:${sphereColor1};stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:${sphereColor2};stop-opacity:0.8" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="38" fill="#000000" opacity="0.9"/>
+                    <circle cx="50" cy="50" r="34" fill="none" stroke="${sphereColor2}" stroke-width="0.5" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="${sphereColor1}" stroke-width="0.5" opacity="0.4"/>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4.5" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#energy-grad-${athlete.id})" stroke-width="4.5" opacity="1" filter="url(#ring-glow-${athlete.id})" stroke-linecap="round" stroke-dasharray="${(energyPercent / 100) * 283} 283" transform="rotate(-90 50 50)">
+                      <animate attributeName="stroke-dasharray" from="0 283" to="${(energyPercent / 100) * 283} 283" dur="1.5s" fill="freeze"/>
+                    </circle>
+                    <circle cx="50" cy="5" r="2" fill="${sphereColor1}" opacity="${energyPercent > 90 ? '1' : '0.3'}"/>
+                    <circle cx="95" cy="50" r="2" fill="${sphereColor1}" opacity="${energyPercent > 70 ? '1' : '0.3'}"/>
+                    <circle cx="50" cy="95" r="2" fill="${sphereColor1}" opacity="${energyPercent > 50 ? '1' : '0.3'}"/>
+                    <circle cx="5" cy="50" r="2" fill="${sphereColor1}" opacity="${energyPercent > 30 ? '1' : '0.3'}"/>
+                    <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="'Orbitron', 'Montserrat', sans-serif" font-size="24" font-weight="900" fill="#FFFFFF" filter="url(#text-glow-${athlete.id})" letter-spacing="1">
+                      ${initials}
+                    </text>
+                  </svg>
+                </div>
                 <div class="athlete-info">
                   <div class="athlete-name">${athlete.name}</div>
                   <div class="athlete-role">${athlete.position || 'N/A'}</div>
                 </div>
               </div>
+              <div class="status-badge ${statusClass}">${athlete.fatigue_status}</div>
             </div>
-            <div class="athlete-details">
-              <div class="athlete-row"><span class="athlete-label">ID:</span> <span class="athlete-value">${athlete.id}</span></div>
-              <div class="athlete-row"><span class="athlete-label">Position:</span> <span class="athlete-value">${athlete.position || 'N/A'}</span></div>
-              <div class="athlete-row"><span class="athlete-label">Height:</span> <span class="athlete-value">${athlete.height_cm !== undefined && athlete.height_cm !== null ? athlete.height_cm + ' cm' : 'N/A'}</span></div>
-              <div class="athlete-row"><span class="athlete-label">Weight:</span> <span class="athlete-value">${athlete.weight_kg !== undefined && athlete.weight_kg !== null ? athlete.weight_kg + ' kg' : 'N/A'}</span></div>
-              <div class="athlete-row"><span class="athlete-label">Age:</span> <span class="athlete-value">${athlete.age !== undefined && athlete.age !== null ? athlete.age : 'N/A'}</span></div>
-              <div class="athlete-row"><span class="athlete-label">Created At:</span> <span class="athlete-value">${athlete.created_at || 'N/A'}</span></div>
+            <div class="energy-bar-section">
+              <div class="energy-label">
+                <span>Energy Level</span>
+                <span class="energy-percentage">${energyPercent}%</span>
+              </div>
+              <div class="energy-bar">
+                <div class="energy-bar-fill ${energyClass}" style="width: ${energyPercent}%;"></div>
+              </div>
+            </div>
+            <div class="athlete-vitals">
+              <div class="vital-row">
+                <span class="vital-row-label">Heart Rate</span>
+                <span class="vital-row-value">${athlete.heart_rate} bpm</span>
+              </div>
+              <div class="vital-row">
+                <span class="vital-row-label">Temperature</span>
+                <span class="vital-row-value">${Number(athlete.body_temperature).toFixed(1)}°C</span>
+              </div>
+              <div class="vital-row">
+                <span class="vital-row-label">Blood Oxygen</span>
+                <span class="vital-row-value">${athlete.spo2} %</span>
+              </div>
             </div>
           </div>
         `;
       }).join('');
       
       container.innerHTML = `<div class="athlete-grid">${athleteCards}</div>`;
+
+        // Animate energy bar load-up
+        setTimeout(() => {
+          document.querySelectorAll('.energy-bar-fill').forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            // Force reflow
+            void bar.offsetWidth;
+            bar.style.transition = 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            bar.style.width = width;
+          });
+        }, 100);
+
+        // Animate SVG ring stroke-dasharray (if present)
+        setTimeout(() => {
+          document.querySelectorAll('.athlete-sphere svg circle[stroke-dasharray]').forEach(ring => {
+            const dash = ring.getAttribute('stroke-dasharray');
+            ring.setAttribute('stroke-dasharray', '0 283');
+            // Force reflow
+            void ring.offsetWidth;
+            ring.setAttribute('stroke-dasharray', dash);
+          });
+        }, 120);
       
       // Add click event listeners with haptic feedback
       document.querySelectorAll('.athlete-card').forEach(card => {
@@ -2986,7 +3124,7 @@
     }
 
     function updateDashboardStats(data) {
-      const totalElement = document.getElementById('total-players');
+      const totalElement = document.getElementById('total-athletes');
       const normalElement = document.getElementById('normal-count');
       const elevatedElement = document.getElementById('elevated-count');
       const fatiguedElement = document.getElementById('fatigued-count');
@@ -3010,12 +3148,12 @@
     let baselineVitals = {
       heart_rate: 120,
       temperature: 36.8,
-      oxygen: 98
+      spo2: 98
     };
     let vitalHistory = {
       heart_rate: [],
       temperature: [],
-      oxygen: []
+      spo2: []
     };
     let lastEnergyPercent = 0;
 
@@ -3079,7 +3217,7 @@
       }
 
       const particleInterval = setInterval(() => {
-        if (document.getElementById('player-profile').classList.contains('active')) {
+        if (document.getElementById('athlete-profile').classList.contains('active')) {
           const randomOrbital = orbitalPositions[Math.floor(Math.random() * orbitalPositions.length)];
           const isLarge = Math.random() < largeParticleChance;
           createParticle(randomOrbital.x, randomOrbital.y, centerX, centerY, color, isLarge);
@@ -3294,19 +3432,19 @@
       
       if (type === 'heart-rate') {
         canvasId = 'sparkline-hr-canvas';
-        history = vitalHistory.heart_rate.length ? vitalHistory.heart_rate : generateVitalHistory(currentPlayer.heart_rate, 'heart_rate');
+        history = vitalHistory.heart_rate.length ? vitalHistory.heart_rate : generateVitalHistory(currentathlete.heart_rate, 'heart_rate');
         minVal = 60;
         maxVal = 180;
         color = '#A855F7';
       } else if (type === 'temperature') {
         canvasId = 'sparkline-temp-canvas';
-        history = vitalHistory.temperature.length ? vitalHistory.temperature : generateVitalHistory(currentPlayer.body_temperature, 'temperature');
+        history = vitalHistory.temperature.length ? vitalHistory.temperature : generateVitalHistory(currentathlete.body_temperature, 'temperature');
         minVal = 35;
         maxVal = 39;
         color = '#EC4899';
-      } else if (type === 'oxygen') {
+      } else if (type === 'spo2') {
         canvasId = 'sparkline-o2-canvas';
-        history = vitalHistory.oxygen.length ? vitalHistory.oxygen : generateVitalHistory(currentPlayer.blood_oxygen, 'oxygen');
+        history = vitalHistory.spo2.length ? vitalHistory.spo2 : generateVitalHistory(currentathlete.spo2, 'spo2');
         minVal = 90;
         maxVal = 100;
         color = '#3B82F6';
@@ -3342,39 +3480,39 @@
       if (!overlay || !grid) return;
 
       // Calculate team statistics
-      const totalPlayers = playersData.length;
-      const normalCount = playersData.filter(p => p.fatigue_status === 'Normal').length;
-      const moderateCount = playersData.filter(p => p.fatigue_status === 'Moderate').length;
-      const fatiguedCount = playersData.filter(p => p.fatigue_status === 'Fatigued').length;
+      const totalathletes = athletesData.length;
+      const normalCount = athletesData.filter(p => p.fatigue_status === 'Normal').length;
+      const moderateCount = athletesData.filter(p => p.fatigue_status === 'Moderate').length;
+      const fatiguedCount = athletesData.filter(p => p.fatigue_status === 'Fatigued').length;
 
-      const avgHeartRate = totalPlayers > 0 ? 
-        Math.round(playersData.reduce((sum, p) => sum + p.heart_rate, 0) / totalPlayers) : 0;
+      const avgHeartRate = totalathletes > 0 ? 
+        Math.round(athletesData.reduce((sum, p) => sum + p.heart_rate, 0) / totalathletes) : 0;
       
-      const avgTemp = totalPlayers > 0 ?
-        (playersData.reduce((sum, p) => sum + p.body_temperature, 0) / totalPlayers).toFixed(1) : '0.0';
+      const avgTemp = totalathletes > 0 ?
+        (athletesData.reduce((sum, p) => sum + p.body_temperature, 0) / totalathletes).toFixed(1) : '0.0';
       
-      const avgOxygen = totalPlayers > 0 ?
-        Math.round(playersData.reduce((sum, p) => sum + p.blood_oxygen, 0) / totalPlayers) : 0;
+      const avgspo2 = totalathletes > 0 ?
+        Math.round(athletesData.reduce((sum, p) => sum + p.spo2, 0) / totalathletes) : 0;
 
       grid.innerHTML = `
         <div class="team-stat-card">
-          <div class="team-stat-label">Total Players</div>
-          <div class="team-stat-value">${totalPlayers}</div>
+          <div class="team-stat-label">Total athletes</div>
+          <div class="team-stat-value">${totalathletes}</div>
         </div>
         <div class="team-stat-card" style="border-color: rgba(16, 185, 129, 0.3);">
           <div class="team-stat-label" style="color: #10B981;">Not Fatigued</div>
           <div class="team-stat-value" style="color: #10B981;">${normalCount}</div>
-          <div class="team-stat-sublabel">${totalPlayers > 0 ? Math.round((normalCount/totalPlayers)*100) : 0}% of team</div>
+          <div class="team-stat-sublabel">${totalathletes > 0 ? Math.round((normalCount/totalathletes)*100) : 0}% of team</div>
         </div>
         <div class="team-stat-card" style="border-color: rgba(245, 158, 11, 0.3);">
           <div class="team-stat-label" style="color: #F59E0B;">Moderate</div>
           <div class="team-stat-value" style="color: #F59E0B;">${moderateCount}</div>
-          <div class="team-stat-sublabel">${totalPlayers > 0 ? Math.round((moderateCount/totalPlayers)*100) : 0}% of team</div>
+          <div class="team-stat-sublabel">${totalathletes > 0 ? Math.round((moderateCount/totalathletes)*100) : 0}% of team</div>
         </div>
         <div class="team-stat-card" style="border-color: rgba(239, 68, 68, 0.3);">
           <div class="team-stat-label" style="color: #EF4444;">Fatigued</div>
           <div class="team-stat-value" style="color: #EF4444;">${fatiguedCount}</div>
-          <div class="team-stat-sublabel">${totalPlayers > 0 ? Math.round((fatiguedCount/totalPlayers)*100) : 0}% of team</div>
+          <div class="team-stat-sublabel">${totalathletes > 0 ? Math.round((fatiguedCount/totalathletes)*100) : 0}% of team</div>
         </div>
         <div class="team-stat-card">
           <div class="team-stat-label">Avg Heart Rate</div>
@@ -3387,8 +3525,8 @@
           <div class="team-stat-sublabel">  C</div>
         </div>
         <div class="team-stat-card">
-          <div class="team-stat-label">Avg Blood Oxygen</div>
-          <div class="team-stat-value">${avgOxygen}</div>
+          <div class="team-stat-label">Avg spo2</div>
+          <div class="team-stat-value">${avgspo2}</div>
           <div class="team-stat-sublabel">SpO₂ %</div>
         </div>
       `;
@@ -3438,7 +3576,7 @@
       const orbitals = [
         { id: 'orbital-top', type: 'heart-rate' },
         { id: 'orbital-right', type: 'temperature' },
-        { id: 'orbital-left', type: 'oxygen' }
+        { id: 'orbital-left', type: 'spo2' }
       ];
 
       orbitals.forEach(orbital => {
@@ -3501,31 +3639,31 @@
     }
 
     function updateComparisonPanel(type) {
-      if (!currentPlayer) return;
+      if (!currentathlete) return;
 
       let current, baseline, unit, changeElement;
 
       if (type === 'heart-rate') {
-        current = currentPlayer.heart_rate;
+        current = currentathlete.heart_rate;
         baseline = baselineVitals.heart_rate;
         unit = 'bpm';
         changeElement = document.getElementById('heart-rate-change');
         document.getElementById('baseline-heart-rate').textContent = baseline;
         document.getElementById('current-heart-rate').textContent = current;
       } else if (type === 'temperature') {
-        current = currentPlayer.body_temperature;
+        current = currentathlete.body_temperature;
         baseline = baselineVitals.temperature;
         unit = '°C';
         changeElement = document.getElementById('temperature-change');
         document.getElementById('baseline-temperature').textContent = baseline.toFixed(1);
         document.getElementById('current-temperature').textContent = current.toFixed(1);
-      } else if (type === 'oxygen') {
-        current = currentPlayer.blood_oxygen;
-        baseline = baselineVitals.oxygen;
+      } else if (type === 'spo2') {
+        current = currentathlete.spo2;
+        baseline = baselineVitals.spo2;
         unit = '%';
-        changeElement = document.getElementById('oxygen-change');
-        document.getElementById('baseline-oxygen').textContent = baseline;
-        document.getElementById('current-oxygen').textContent = current;
+        changeElement = document.getElementById('spo2-change');
+        document.getElementById('baseline-spo2').textContent = baseline;
+        document.getElementById('current-spo2').textContent = current;
       }
 
       if (changeElement) {
@@ -3534,8 +3672,8 @@
         
         changeElement.classList.remove('positive', 'negative', 'neutral');
         
-        if (type === 'oxygen') {
-          // For oxygen, higher is better
+        if (type === 'spo2') {
+          // For spo2, higher is better
           if (diff > 0) {
             changeElement.classList.add('positive');
             changeElement.innerHTML = `<span class="comparison-arrow">↑</span><span>+${diffAbs}${unit} Better</span>`;
@@ -3576,7 +3714,7 @@
         s.classList.remove('active');
       });
 
-      const fatiguePercent = calculateFatiguePercentage(athlete.heart_rate, athlete.body_temperature, athlete.blood_oxygen);
+      const fatiguePercent = calculateFatiguePercentage(athlete.heart_rate, athlete.body_temperature, athlete.spo2);
       const energyPercent = calculateEnergyPercentage(fatiguePercent);
 
       // Check for 100% energy celebration
@@ -3594,11 +3732,11 @@
       
       const hrElement = document.getElementById('profile-heart-rate');
       const tempElement = document.getElementById('profile-temperature');
-      const o2Element = document.getElementById('profile-oxygen');
+      const o2Element = document.getElementById('profile-spo2');
       
       if (hrElement) hrElement.textContent = athlete.heart_rate;
       if (tempElement) tempElement.textContent = athlete.body_temperature.toFixed(1);
-      if (o2Element) o2Element.textContent = athlete.blood_oxygen;
+      if (o2Element) o2Element.textContent = athlete.spo2;
 
       // Update reactor core color
       const reactorCore = document.getElementById('reactor-core');
@@ -3682,12 +3820,12 @@
 
       const o2Ring = document.getElementById('o2-ring');
       if (o2Ring) {
-        // Oxygen: range 90-100%
+        // spo2: range 90-100%
         const minO2 = 90;
         const maxO2 = 100;
         const range = maxO2 - minO2;
         
-        const fillPercent = Math.min(100, Math.max(0, ((athlete.blood_oxygen - minO2) / range) * 100));
+        const fillPercent = Math.min(100, Math.max(0, ((athlete.spo2 - minO2) / range) * 100));
         
         const circumference = 440;
         const targetFillLength = (fillPercent / 100) * circumference;
@@ -3707,7 +3845,7 @@
       const orbitals = document.querySelectorAll('.orbital-data-ring');
       orbitals.forEach(orbital => {
         // Check if any vital is critical
-        const isCritical = athlete.heart_rate > 160 || athlete.body_temperature >= 38.0 || athlete.blood_oxygen <= 93;
+        const isCritical = athlete.heart_rate > 160 || athlete.body_temperature >= 38.0 || athlete.spo2 <= 93;
         
         if (isCritical) {
           // Speed up rotation animation
