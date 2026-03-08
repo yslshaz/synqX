@@ -158,7 +158,7 @@ class VitalReading(Base):
     rmssd: Mapped[Optional[float]] = mapped_column(Float)
 
     body_temperature: Mapped[Optional[float]] = mapped_column(Float)
-    spo2: Mapped[Optional[int]] = mapped_column(Integer)
+    blood_oxygen: Mapped[Optional[int]] = mapped_column(Integer)
 
     athlete: Mapped["Athlete"] = relationship(back_populates="vital_readings")
 
@@ -186,26 +186,5 @@ class FatigueAssessment(Base):
     athlete: Mapped["Athlete"] = relationship(back_populates="fatigue_assessments")
     vital_reading: Mapped["VitalReading"] = relationship()
 
-# --- SQLAlchemy event: create vital_reading on new athlete ---
-@event.listens_for(Athlete, 'after_insert')
-def create_vital_reading_on_athlete_insert(mapper, connection, target):
-    """
-    Automatically create a VitalReading row for every new Athlete.
-    Uses default values if not provided.
-    """
-    session = Session(bind=connection)
-    # Try to get values from the target if present, else use defaults
-    heart_rate = getattr(target, 'heart_rate', 0)
-    body_temperature = getattr(target, 'body_temperature', 0.0)
-    spo2 = getattr(target, 'spo2', 0)
-    vital = VitalReading(
-        athlete_id=target.id,
-        heart_rate=heart_rate if heart_rate is not None else 0,
-        body_temperature=body_temperature if body_temperature is not None else 0.0,
-        spo2=spo2 if spo2 is not None else 0
-    )
-    session.add(vital)
-    session.commit()
-    session.close()
 
 

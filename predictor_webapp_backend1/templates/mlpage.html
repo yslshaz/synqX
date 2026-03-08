@@ -6,7 +6,20 @@
   <title>Fatigue Predictor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+<div class="app-container">
+    <nav class="nav-bar">
+      <div class="logo" id="app-title">SYNQ</div>
+      <div class="nav-links">
+        <span class="nav-link active" data-page="welcome">Home</span>
+        <span class="nav-link" data-page="onboarding">Features</span>
+        <span class="nav-link" data-page="dashboard">Dashboard</span>
+        <span class="nav-link" data-page="athletes">Athletes</span>
+      </div>
+    </nav>
+  </div>  
+
   <main class="container">
     <header class="header">
       <h1>Fatigue Predictor</h1>

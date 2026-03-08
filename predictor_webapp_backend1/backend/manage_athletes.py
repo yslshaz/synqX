@@ -190,7 +190,7 @@ def populate_baselines():
             print('No athletes found.')
             return
         
-        metrics = ['rmssd', 'hrv', 'heart_rate', 'spo2', 'body_temperature']
+        metrics = ['rmssd', 'hrv', 'heart_rate', 'blood_oxygen', 'body_temperature']
         
         # Create baseline metrics for each athlete
         created_count = 0
@@ -203,7 +203,7 @@ def populate_baselines():
                     avg_value = 50.0 + (idx * 3)    # 50-83
                 elif metric == 'heart_rate':
                     avg_value = 60.0 + (idx * 1)    # 60-70
-                elif metric == 'spo2':
+                elif metric == 'blood_oxygen':
                     avg_value = 97.0 + (idx * 0.1)  # 97-98.1
                 else:  # body_temperature
                     avg_value = 36.8 + (idx * 0.05) # 36.8-37.35

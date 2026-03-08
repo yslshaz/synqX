@@ -2,12 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 # 1. DATABASE CONFIGURATION
-# This points to the file 'synq.db' in your project folder.
-# It acts as the central storage for:
-# - Athlete Profiles (UUIDs)
-# - Chest Strap Logs (Integers)
-# - Xeno LLM History
-SQLALCHEMY_DATABASE_URL = "sqlite:///./synq.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///C:/Users/USER/Desktop/SYNQX/predictor_webapp_backend1.1/synq.db"
 
 # 2. THE ENGINE (The Connection Core)
 # connect_args={"check_same_thread": False} is CRITICAL.
