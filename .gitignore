@@ -10,9 +10,10 @@ build/
 dist/
 eggs/
 
+# Local database files
+*.db
+
 # OS and Editor files
 .DS_Store
 .vscode/
 .idea/
-
-# Tracked files will not be ignored
