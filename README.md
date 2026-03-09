@@ -108,6 +108,33 @@ You will land on the **Welcome** page of SYNQ. 🎉
 
 ---
 
+## 🖱️ Running from VS Code (easiest — just click a button!)
+
+If you use **Visual Studio Code**, you can skip most of the terminal steps. The repository includes `.vscode/` config files that add run buttons directly to the editor.
+
+### Option A — The ▶ Play / F5 button
+
+1. Open the `synqX` folder in VS Code (`File → Open Folder`)
+2. Activate your virtual environment first (Step 4 above, in the VS Code integrated terminal)
+3. Click the **Run and Debug** icon in the left sidebar (or press `Ctrl+Shift+D` / `⇧⌘D` on Mac)
+4. At the top of the panel, select **"▶ Run Flask App"** from the dropdown
+5. Click the big green **▶** button (or press **`F5`**)
+
+The integrated terminal opens, the server starts, and you visit `http://127.0.0.1:5000` in your browser.
+
+### Option B — Terminal → Run Task menu
+
+1. In the top menu bar click **Terminal**
+2. Click **Run Task…**
+3. Choose one of:
+   - **Install Dependencies** — runs `pip install -r requirements.txt`
+   - **Run Flask App** — starts the server on port 5000
+   - **Test GET /api/athletes** — fires a test request to the athletes API
+
+> **Keyboard shortcut:** Press `Ctrl+Shift+B` (Windows/Linux) or `⇧⌘B` (Mac) to launch **"Run Flask App"** instantly without opening any menu.
+
+---
+
 ## 🗂️ Project structure
 
 ```

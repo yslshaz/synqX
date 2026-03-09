@@ -2,13 +2,47 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Test GET /api/players endpoint",
+			"label": "Install Dependencies",
 			"type": "shell",
-			"command": "curl http://127.0.0.1:5000/api/players",
-			"args": [],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
+			"command": "pip install -r requirements.txt",
+			"options": {
+				"cwd": "${workspaceFolder}/predictor_webapp_backend1"
+			},
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Flask App",
+			"type": "shell",
+			"command": "python app.py",
+			"options": {
+				"cwd": "${workspaceFolder}/predictor_webapp_backend1"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test GET /api/athletes",
+			"type": "shell",
+			"command": "curl http://127.0.0.1:5000/api/athletes",
+			"group": "test",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": []
 		}
 	]
 }
