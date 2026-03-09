@@ -1,8 +1,11 @@
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 # 1. DATABASE CONFIGURATION
-SQLALCHEMY_DATABASE_URL = "sqlite:///C:/Users/USER/Desktop/SYNQX/predictor_webapp_backend1.1/synq.db"
+# Resolve the database path relative to this file so it works on any machine.
+BASE_DIR = Path(__file__).resolve().parent.parent  # predictor_webapp_backend1/
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{BASE_DIR / 'synq.db'}"
 
 # 2. THE ENGINE (The Connection Core)
 # connect_args={"check_same_thread": False} is CRITICAL.

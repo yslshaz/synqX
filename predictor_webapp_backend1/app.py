@@ -95,7 +95,7 @@ def mlpage():
 def onboarding():
     return render_template("onboarding.html")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/USER/Desktop/SYNQX/predictor_webapp_backend1.1/synq.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + str(HERE / 'synq.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
