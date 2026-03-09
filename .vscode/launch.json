@@ -1,0 +1,14 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "\u25b6 Run Flask App",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/predictor_webapp_backend1/app.py",
+			"cwd": "${workspaceFolder}/predictor_webapp_backend1",
+			"console": "integratedTerminal",
+			"justMyCode": false
+		}
+	]
+}

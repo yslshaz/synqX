@@ -15,5 +15,4 @@ eggs/
 
 # OS and Editor files
 .DS_Store
-.vscode/
 .idea/
