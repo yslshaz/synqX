@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 # 1. DATABASE CONFIGURATION
 # Resolve the database path relative to this file so it works on any machine.
-BASE_DIR = Path(__file__).resolve().parent.parent  # predictor_webapp_backend1/
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # project root
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{BASE_DIR / 'synq.db'}"
 
 # 2. THE ENGINE (The Connection Core)

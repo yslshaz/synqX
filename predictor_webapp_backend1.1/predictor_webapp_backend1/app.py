@@ -98,7 +98,7 @@ def mlpage():
 
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + str(HERE / 'synq.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + str(HERE.parent / 'synq.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
