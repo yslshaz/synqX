@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onboarding | SYNQ</title>
+    <title>About us SYNQ </title>
     <!-- Google Fonts -->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -15,15 +15,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
 
    
-    <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='shared.js') }}"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10" crossorigin="anonymous"></script>
-    <style>@view-transition { navigation: auto; }</style>
+<style>@view-transition { navigation: auto; }</style>
+<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
 
     <style>
       .onboarding-content {
         max-width: 1000px;
         margin: 0 auto;
+        padding-left: 32px;
+        padding-right: 32px;
       }
       .onboarding-header {
         text-align: center;
@@ -182,6 +183,14 @@
       letter-spacing: -0.2px;
       font-weight: 400;
     }
+
+     .feature-content p {
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.5;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      font-weight: 400;
+    }
     </style>
   </head>
 
@@ -191,19 +200,18 @@
       <nav class="nav-bar">
         <div class="logo" id="app-title">SYNQ</div>
         <div class="nav-links">
-          <a class="nav-link" hx-get="/" hx-target="#page-content" hx-push-url="true">Home</a>
-          <a class="nav-link active" hx-get="/onboarding" hx-target="#page-content" hx-push-url="true">Features</a>
-          <a class="nav-link" hx-get="/dashboard" hx-target="#page-content" hx-push-url="true">Dashboard</a>
-          <a class="nav-link" hx-get="/athletes" hx-target="#page-content" hx-push-url="true">Athletes</a>
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link active" href="/onboarding">Features</a>
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/athletes">Athletes</a>
         </div>
       </nav>
-    </div>
     <div id="page-content">
       <!-- Onboarding Page -->
       <main id="onboarding" class="page">
         <div class="onboarding-content">
           <div class="onboarding-header">
-            <h1 class="page-title">How SYNQ Works</h1>
+            <h1 class="page-title" style="font-family: 'Inter', sans-serif;">How SYNQ Works</h1>
             <p class="page-subtitle">Peak athlete's performance</p>
           </div>
           <div class="feature-cards">
@@ -237,8 +245,8 @@
             </div>
           </div>
           <div class="action-buttons">
-            <button class="primary-button" onclick="navigateToPage('dashboard')">View Dashboard</button>
-            <button class="secondary-button" onclick="navigateToPage('athletes')">Manage athletes</button>
+            <a class="primary-button" href="/dashboard" style="display:inline-block;text-decoration:none;">View Dashboard</a>
+            <a class="secondary-button" href="/athletes" style="display:inline-block;text-decoration:none;">Manage athletes</a>
           </div>
         </div>
       </main>
@@ -255,14 +263,25 @@
         });
       });
     </script>
+
+
+<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
+
+<script>
+  if (typeof initializeApp === 'function') {
+    initializeApp();
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initializeApp === 'function') {
+        initializeApp();
+      }
+    });
+  }
+</script>
   </body>
+
   </html>
     
-    .feature-content p {
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.5;
-      font-size: 14px;
-      letter-spacing: -0.2px;
-      font-weight: 400;
-    }
+   
     

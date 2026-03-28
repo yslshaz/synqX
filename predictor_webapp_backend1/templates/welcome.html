@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome | SYNQ</title>
+  <title>Welcome</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
   </style>
   <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10" crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='shared.js') }}"></script>
 
-    <style>@view-transition { navigation: auto; }</style>
+
+<style>@view-transition { navigation: auto; }</style>
+<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
 
   <style>
     /* Welcome Page */
@@ -155,55 +153,55 @@
 
 <body>
 
-   <!-- Welcome Page -->
+  <!-- Welcome Page -->
   
   <div class="app-container">
     <nav class="nav-bar">
       <div class="logo" id="app-title">SYNQ</div>
       <div class="nav-links">
-        <a class="nav-link active" hx-get="/" hx-target="#page-content" hx-push-url="true">Home</a>
-        <a class="nav-link" hx-get="/onboarding" hx-target="#page-content" hx-push-url="true">Features</a>
-        <a class="nav-link" hx-get="/dashboard" hx-target="#page-content" hx-push-url="true">Dashboard</a>
-        <a class="nav-link" hx-get="/athletes" hx-target="#page-content" hx-push-url="true">Athletes</a>
+        <a class="nav-link active" href="/">Home</a>
+        <a class="nav-link" href="/onboarding">Features</a>
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/athletes">Athletes</a>
       </div>
     </nav>
-  </div>
+    <div id="page-content">
 
-  <div id="page-content">
-    <!-- Welcome Page (initial content) -->
-    <main id="welcome" class="page active">
-      <div class="welcome-screen">
-        <h1 class="welcome-title" id="welcome-title">SYNQ</h1>
-        <p class="welcome-subtitle" id="welcome-subtitle">Athletic Intelligence Platform</p>
-        <div class="vitals-preview">
-          <div class="vital-card"><span class="vital-icon">❤️</span>
-            <div class="vital-label">
-              Heart Rate
+      <!-- Welcome Page -->
+      <main id="welcome" class="page active">
+        <div class="welcome-screen">
+          <h1 class="welcome-title" id="welcome-title" style="font-family: 'Orbitron', sans-serif; font-size: 110px; font-weight: 900; color: #fff; letter-spacing: 2px; text-shadow: 0 0 24px #10ff80, 0 0 48px #10ff80, 0 0 8px #10B981, 0 0 2px #10B981; border-radius: 18px; padding: 0 24px;">SYNQ</h1>
+          <p class="welcome-subtitle" id="welcome-subtitle">Athletic Intelligence Platform</p>
+          <div class="vitals-preview">
+            <div class="vital-card"><span class="vital-icon">❤️</span>
+              <div class="vital-label">
+                Heart Rate
+              </div>
+              <div class="vital-sublabel">
+                Real-time monitoring
+              </div>
             </div>
-            <div class="vital-sublabel">
-              Real-time monitoring
+            <div class="vital-card"><span class="vital-icon">🌡️</span>
+              <div class="vital-label">
+                Temperature
+              </div>
+              <div class="vital-sublabel">
+                Body heat tracking
+              </div>
+            </div>
+            <div class="vital-card"><span class="vital-icon">💨</span>
+              <div class="vital-label">
+                Blood Oxygen
+              </div>
+              <div class="vital-sublabel">
+                SpO₂ saturation %
+              </div>
             </div>
           </div>
-          <div class="vital-card"><span class="vital-icon">🌡️</span>
-            <div class="vital-label">
-              Temperature
-            </div>
-            <div class="vital-sublabel">
-              Body heat tracking
-            </div>
-          </div>
-          <div class="vital-card"><span class="vital-icon">💨</span>
-            <div class="vital-label">
-              Blood Oxygen
-            </div>
-            <div class="vital-sublabel">
-              SpO₂ saturation %
-            </div>
-          </div>
+          <a class="primary-button" id="get-started-button" href="/dashboard" style="display:inline-block;text-decoration:none;">Get Started</a>
         </div>
-        <button class="primary-button" id="get-started-button" onclick="navigateToPage('dashboard')">Get Started</button>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 
   <script>
@@ -218,6 +216,23 @@
         });
       });
   </script>
+
+<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
+
+<script>
+  if (typeof initializeApp === 'function') {
+    initializeApp();
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initializeApp === 'function') {
+        initializeApp();
+      }
+    });
+  }
+</script>
+
 </body>
+
 </html>
 

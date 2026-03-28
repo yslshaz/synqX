@@ -4,6 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Athletes List</title>
+
+
 	<!-- Google Fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -12,14 +14,8 @@
   </style>
 	<!-- Shared CSS -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
+   
 
-  
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-  <!-- HTMX -->
-  <script src="https://unpkg.com/htmx.org@1.9.10" crossorigin="anonymous"></script>
-  	<!-- Shared JS -->
-	<script src="{{ url_for('static', filename='shared.js') }}"></script>
-  <style>@view-transition { navigation: auto; }</style>
 
 	<style>
 	/* athlete List Page */
@@ -32,6 +28,18 @@
       gap: 16px;
     }
     
+    .page-title {
+      font-family: 'Orbitron', 'Montserrat', sans-serif;
+      font-size: 48px;
+      font-weight: 900;
+      color: #FFFFFF;
+      text-align: center;
+      margin-top: 32px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 16px rgba(52,211,153,0.18), 0 0px 2px #10B981;
+    }
+
     .add-athlete-button {
       background: #FFFFFF;
       color: #000000;
@@ -560,18 +568,12 @@
     <nav class="nav-bar">
       <div class="logo" id="app-title">SYNQ</div>
       <div class="nav-links">
-        <a class="nav-link" hx-get="/" hx-target="#page-content" href="/">Home</a>
-        <a class="nav-link" hx-get="/onboarding" hx-target="#page-content" href="/onboarding">Features</a>
-        <a class="nav-link" hx-get="/dashboard" hx-target="#page-content" href="/dashboard">Dashboard</a>
-        <a class="nav-link active" hx-get="/athletes" hx-target="#page-content" href="/athletes">Athletes</a>
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/onboarding">Features</a>
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link active" href="/athletes">Athletes</a>
       </div>
     </nav>
-  </div>
-
-
-
- 
- 
      <!-- athletes List Page -->
   <main id="athletes" class="page">
     <div id="page-content">
@@ -581,7 +583,9 @@
          <p class="page-subtitle">Real-time fatigue monitoring</p>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-         <div id="filter-indicator-container"></div><button class="add-athlete-button" onclick="openAddAthleteModal()">+ Add Athlete</button>
+        <div id="filter-indicator-container"></div>
+        <button class="add-athlete-button">+ Add Athlete</button>
+        
         </div>
        </div>
       <div id="athlete-list-container">
@@ -591,6 +595,7 @@
       </div>
     </div>
    </main>
+   </div>
 
   
  
@@ -623,7 +628,8 @@
     </form>
    </div>
   </div>
-    <script>
+
+  <script>
     let athletesData = [];
     // --- ML Integration (mlpage.html style) ---
     let mlSchema = null;
@@ -679,7 +685,11 @@
       };
     }
 
-    let currentFilter = null;
+    let currentFilter = new URLSearchParams(window.location.search).get('filter') || null;
+
+    function clearFilter() {
+      window.location.href = '/dashboard';
+    }
 
   // Classification functions
    
@@ -712,21 +722,56 @@
       return name.substring(0, 2).toUpperCase();
     }
 
-    // Modal functions
+
+    // Attach event listener for Add Athlete button
+    document.addEventListener('DOMContentLoaded', () => {
+      const addButton = document.querySelector('.add-athlete-button');
+      if (addButton) {
+        addButton.addEventListener('click', openAddAthleteModal);
+      }
+    });
+
+     // Modal functions
     function openAddAthleteModal() {
-      document.getElementById('modal-title').textContent = 'Add Athlete';
-      document.getElementById('submit-button').textContent = 'Add Athlete';
-      document.getElementById('athlete-form').reset();
-      document.getElementById('heart-rate-value').textContent = '120';
-      document.getElementById('body-temp-value').textContent = '37.0';
-      document.getElementById('blood-oxygen-value').textContent = '95';
-      document.getElementById('athlete-modal').classList.add('active');
+    console.debug('Add Athlete button clicked');
+    document.getElementById('modal-title').textContent = 'Add Athlete';
+    document.getElementById('submit-button').textContent = 'Add Athlete';
+    document.getElementById('athlete-form').reset();
+    document.getElementById('heart-rate-value').textContent = '120';
+    document.getElementById('body-temp-value').textContent = '37.0';
+    document.getElementById('blood-oxygen-value').textContent = '95';
+    document.getElementById('athlete-modal').classList.add('active');
+    }
+    
+
+function closeAthleteModal() {
+  document.getElementById('athlete-modal').classList.remove('active');
+  document.getElementById('athlete-form').reset();
+}
+
+    // Data SDK Handler
+   // Fetch athletes from backend
+    async function fetchAthletes() {
+      try {
+        const response = await fetch('/api/athletes');
+        if (!response.ok) throw new Error('Failed to fetch athletes');
+        const data = await response.json();
+        athletesData = data;
+        renderAthleteList(athletesData);
+        //updateDashboardStats(athletesData);
+      } catch (error) {
+        console.error('Error fetching athletes:', error);
+        athletesData = [];
+        renderAthleteList(athletesData);
+        //updateDashboardStats(athletesData);
+      }
     }
 
-    function closeAthleteModal() {
-      document.getElementById('athlete-modal').classList.remove('active');
-      document.getElementById('athlete-form').reset();
+    // Initialize Data SDK
+    async function initializeApp() {
+      await fetchAthletes();
     }
+    initializeApp();
 
     async function handleAthleteSubmit(event) {
       event.preventDefault();
@@ -745,6 +790,7 @@
       submitButton.textContent = 'Saving...';
       submitButton.disabled = true;
     
+
 
     // Use ML model for fatigue prediction (only getPayload)
       let fatigueStatus = 'Unknown';
@@ -816,7 +862,7 @@
       }
 
       if (currentFilter) {
-        const badgeClass = currentFilter === 'Normal' ? 'optimal' : 
+        const badgeClass = currentFilter === 'Not Fatigued' ? 'optimal' :
                           currentFilter === 'Moderate' ? 'moderate' : 'fatigued';
         filterContainer.innerHTML = `
           <div class="filter-indicator">
@@ -844,8 +890,8 @@
       
       const athleteCards = filteredData.map(athlete => {
         // Only use ML-based fatigue status; energy percent can be set to N/A or hidden if not provided by backend
-        const fatiguePercent = null;
-        const energyPercent = null;
+        const fatiguePercent = calculateFatiguePercentage(athlete.heart_rate, athlete.body_temperature, athlete.blood_oxygen);
+        const energyPercent = calculateEnergyPercentage(fatiguePercent);
         // Treat 'Not Fatigued' as 'Normal' for all color/status logic
         const status = (athlete.fatigue_status === 'Not Fatigued') ? 'Normal' : athlete.fatigue_status;
         const energyClass = status === 'Normal' ? 'optimal' : 
@@ -878,7 +924,7 @@
                 status === 'Moderate' ? 'status-elevated' : 'status-fatigued';
 
         return `
-          <div class="athlete-card" data-athlete-id="${athlete.id}">
+          <div class="athlete-card" data-athlete-id="${athlete.id}" data-athlete-name="${athlete.name}">
             <div class="athlete-header">
               <div class="athlete-info-section">
                 <div class="athlete-sphere">
@@ -977,24 +1023,6 @@
             ring.setAttribute('stroke-dasharray', dash);
           });
         }, 120);
-      
-      // Add click event listeners with haptic feedback
-      document.querySelectorAll('.athlete-card').forEach(card => {
-        card.addEventListener('click', function(event) {
-          triggerHapticRipple(this, event);
-          const sphereIcon = this.querySelector('.athlete-sphere svg');
-          if (sphereIcon) {
-            triggerHapticGlow(sphereIcon);
-          }
-          
-          const athleteId = this.getAttribute('data-athlete-id');
-          if (athleteId) {
-            setTimeout(() => {
-              openAthleteProfile(athleteId);
-            }, 150);
-          }
-        });
-      });
     }
 
      // Slider value updates
@@ -1025,6 +1053,17 @@
       }
     });
 
+
     </script>
+
+
+
+
+
+
+
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}" ></script>
+
 </body>
 </html>

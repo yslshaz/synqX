@@ -75,25 +75,28 @@ app = Flask(__name__)
 def welcome():
     return render_template("welcome.html")
 
-@app.route("/athleteprofile")
-def athleteprofile():
-    return render_template("athleteprofile.html")
-
-@app.route("/athletes")
-def athletes():
-    return render_template("athletes.html")
+@app.route("/onboarding")
+def onboarding():
+    return render_template("onboarding.html")
 
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route("/athletes")
+def athletes():
+    return render_template("athletes.html")
+
+@app.route("/athleteprofile")
+@app.route("/athleteprofile/<athlete_id>")
+def athleteprofile(athlete_id=None):
+    return render_template("athleteprofile.html", athlete_id=athlete_id)
+
 @app.route("/mlpage")
 def mlpage():
     return render_template("mlpage.html")
 
-@app.route("/onboarding")
-def onboarding():
-    return render_template("onboarding.html")
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/USER/Desktop/SYNQX/predictor_webapp_backend1.1/synq.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
