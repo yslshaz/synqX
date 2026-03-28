@@ -1,10 +1,13 @@
+from sqlalchemy import event
+from sqlalchemy.orm import Session
+# ...existing code...
 import uuid
 import enum
 from datetime import datetime
 from typing import List, Optional
 from sqlalchemy import String, Integer, Float, ForeignKey, DateTime, JSON, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from backend.database import Base
 
 # Helper function to generate UUIDs
 def generate_uuid():
@@ -44,6 +47,15 @@ class Athlete(Base):
     vital_readings: Mapped[List["VitalReading"]] = relationship(
         back_populates="athlete",
         cascade="all, delete-orphan"
+    )
+
+    # One-to-one: latest vital reading (optional, for direct access)
+    latest_vital_reading: Mapped["VitalReading"] = relationship(
+        "VitalReading",
+        primaryjoin="Athlete.id==foreign(VitalReading.athlete_id)",
+        uselist=False,
+        viewonly=True,
+        order_by="desc(VitalReading.timestamp)"
     )
 
     fatigue_assessments: Mapped[List["FatigueAssessment"]] = relationship(
@@ -88,6 +100,7 @@ class TrainingSession(Base):
 
     # --- CHECKLIST ---
     exercises_planned: Mapped[Optional[list]] = mapped_column(JSON)
+
     exercises_completed: Mapped[Optional[list]] = mapped_column(JSON)
 
     # --- LOAD METRICS ---
@@ -145,7 +158,7 @@ class VitalReading(Base):
     rmssd: Mapped[Optional[float]] = mapped_column(Float)
 
     body_temperature: Mapped[Optional[float]] = mapped_column(Float)
-    spo2: Mapped[Optional[int]] = mapped_column(Integer)
+    blood_oxygen: Mapped[Optional[int]] = mapped_column(Integer)
 
     athlete: Mapped["Athlete"] = relationship(back_populates="vital_readings")
 
@@ -172,5 +185,6 @@ class FatigueAssessment(Base):
     # ✅ Correct relationships
     athlete: Mapped["Athlete"] = relationship(back_populates="fatigue_assessments")
     vital_reading: Mapped["VitalReading"] = relationship()
+
 
 

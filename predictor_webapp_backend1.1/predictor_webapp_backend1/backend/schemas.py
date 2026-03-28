@@ -27,8 +27,16 @@ class AthleteResponse(AthleteBase):
 class MetricInput(BaseModel):
     athlete_id: str
     bpm: int           # Heart Rate
-    hrv: float         # General HRV
-    rmssd: float       # Raw ms value (The input for SYNQ)
+  
+    hrv: Optional[float] = None
+
+    rmssd: Optional[float] = None
+
+
+
+    class Config:
+
+        from_attributes = True
 
 # OUTPUT: The processed data returned to the Dashboard
 class MetricResponse(MetricInput):

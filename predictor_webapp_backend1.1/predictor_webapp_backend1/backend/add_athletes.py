@@ -1,5 +1,9 @@
-from database import SessionLocal
-from models import Athlete
+try:
+    from .database import SessionLocal
+    from .models import Athlete
+except ImportError:
+    from database import SessionLocal
+    from models import Athlete
 
 SAMPLE_ATHLETES = [
     {"name": "Shazryl Hakeemy", "position": "Forward", "height_cm": 180, "weight_kg": 80, "age": 23},

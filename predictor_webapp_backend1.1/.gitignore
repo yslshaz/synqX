@@ -1,0 +1,18 @@
+# Python Virtual Environments
+venv/
+.venv/
+env/
+
+# Python artifacts
+__pycache__/
+*.pyc
+build/
+dist/
+eggs/
+
+# Local database files
+*.db
+
+# OS and Editor files
+.DS_Store
+.idea/

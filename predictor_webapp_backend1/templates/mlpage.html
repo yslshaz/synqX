@@ -331,6 +331,21 @@
     resultEl.textContent = String(e);
   });
 </script>
+<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='shared.js') }}"></script>
+
+<script>
+  if (typeof initializeApp === 'function') {
+    initializeApp();
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initializeApp === 'function') {
+        initializeApp();
+      }
+    });
+  }
+</script>
 
 </body>
+
 </html>
