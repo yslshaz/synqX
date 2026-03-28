@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+/* Dashboard Page */
+.dashboard-section {
+	margin-bottom: 48px;
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 32px;
+}
+
+.section-header-left h2 {
+	margin: 0;
+}
+
+.active-athletes-badge {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 10px;
+}
+
+.active-athletes-text {
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.6);
+	font-weight: 500;
+	letter-spacing: -0.2px;
+}
+
+.active-athletes-text strong {
+	color: #FFFFFF;
+	font-weight: 700;
+	font-size: 16px;
+	margin-left: 4px;
+}
+
+.section-title {
+	font-family: 'Inter', sans-serif;
+	font-size: 20px;
+	font-weight: 700;
+	color: #FFFFFF;
+	margin-bottom: 8px;
+	letter-spacing: -0.5px;
+}
+
+.section-description {
+	font-size: 14px;
+	color: rgba(255, 255, 255, 0.5);
+	margin-bottom: 24px;
+	letter-spacing: -0.2px;
+	font-weight: 400;
+}
+
+.status-cards-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+	margin-bottom: 32px;
+}
+
+.status-card {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 20px;
+	padding: 32px 24px;
+	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.status-card::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	border-radius: 16px;
+	padding: 2px;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	opacity: 0;
+	transition: opacity 0.4s ease;
+}
+
+.status-card-inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 12px;
+}
+
+.status-3d-icon {
+	width: 80px;
+	height: 80px;
+	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.status-3d-icon svg {
+	width: 100%;
+	height: 100%;
+}
+
+.status-label {
+	font-family: 'Inter', sans-serif;
+	font-size: 14px;
+	font-weight: 700;
+	color: #FFFFFF;
+	letter-spacing: -0.2px;
+}
+
+.status-count {
+	font-family: 'Inter', sans-serif;
+	font-size: 32px;
+	font-weight: 800;
+	color: #FFFFFF;
+	line-height: 1;
+	letter-spacing: -1px;
+}
+
+.status-card:hover {
+	transform: translateY(-8px);
+}
+
+.status-card:hover::before {
+	opacity: 1;
+}
+
+.status-card:hover .status-3d-icon {
+	transform: scale(1.1) translateY(-5px);
+}
+
+.status-card.status-optimal {
+	background: rgba(16, 185, 129, 0.05);
+	border-color: rgba(16, 185, 129, 0.2);
+	box-shadow: 0 0 30px rgba(16, 185, 129, 0.3),
+							0 0 60px rgba(16, 185, 129, 0.15),
+							inset 0 0 40px rgba(16, 185, 129, 0.08);
+}
+
+.status-card.status-optimal:hover {
+	background: rgba(16, 185, 129, 0.08);
+	border-color: rgba(16, 185, 129, 0.3);
+	box-shadow: 0 0 40px rgba(16, 185, 129, 0.4),
+							0 0 80px rgba(16, 185, 129, 0.2),
+							inset 0 0 60px rgba(16, 185, 129, 0.1);
+}
+
+.status-card.status-moderate {
+	background: rgba(245, 158, 11, 0.05);
+	border-color: rgba(245, 158, 11, 0.2);
+	box-shadow: 0 0 30px rgba(245, 158, 11, 0.3),
+							0 0 60px rgba(245, 158, 11, 0.15),
+							inset 0 0 40px rgba(245, 158, 11, 0.08);
+}
+
+.status-card.status-moderate:hover {
+	background: rgba(245, 158, 11, 0.08);
+	border-color: rgba(245, 158, 11, 0.3);
+	box-shadow: 0 0 40px rgba(245, 158, 11, 0.4),
+							0 0 80px rgba(245, 158, 11, 0.2),
+							inset 0 0 60px rgba(245, 158, 11, 0.1);
+}
+
+.status-card.status-fatigued {
+	background: rgba(239, 68, 68, 0.05);
+	border-color: rgba(239, 68, 68, 0.2);
+	box-shadow: 0 0 30px rgba(239, 68, 68, 0.3),
+							0 0 60px rgba(239, 68, 68, 0.15),
+							inset 0 0 40px rgba(239, 68, 68, 0.08);
+}
+
+.status-card.status-fatigued:hover {
+	background: rgba(239, 68, 68, 0.08);
+	border-color: rgba(239, 68, 68, 0.3);
+	box-shadow: 0 0 40px rgba(239, 68, 68, 0.4),
+							0 0 80px rgba(239, 68, 68, 0.2),
+							inset 0 0 60px rgba(239, 68, 68, 0.1);
+}
+
+.stat-icon {
+	font-size: 32px;
+	margin-bottom: 16px;
+	display: block;
+}

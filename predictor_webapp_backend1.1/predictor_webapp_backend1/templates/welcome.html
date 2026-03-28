@@ -4,157 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-  </style>
   <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
-
-
-<style>@view-transition { navigation: auto; }</style>
-<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-<script src="{{ url_for('static', filename='shared.js') }}"></script>
-
-  <style>
-    /* Welcome Page */
-    .welcome-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      flex: 1;
-      padding: 60px 24px;
-    }
-    .welcome-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 96px;
-      font-weight: 800;
-      margin-bottom: 20px;
-      color: #FFFFFF;
-      letter-spacing: -3px;
-    }
-    .welcome-subtitle {
-      font-family: 'Inter', sans-serif;
-      font-size: 20px;
-      color: rgba(255, 255, 255, 0.5);
-      margin-bottom: 60px;
-      font-weight: 400;
-      letter-spacing: -0.3px;
-    }
-    .vitals-preview {
-      display: flex;
-      gap: 32px;
-      margin-bottom: 48px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .vital-card {
-      width: 200px;
-      height: 240px;
-      cursor: pointer;
-      border-radius: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 40px rgba(192, 192, 192, 0.3), 
-                  0 0 80px rgba(192, 192, 192, 0.15);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .vital-card:nth-child(1) {
-      background: linear-gradient(135deg, rgba(255, 20, 147, 0.15), rgba(220, 20, 60, 0.08));
-      box-shadow: 0 0 40px rgba(255, 20, 147, 0.4), 
-                  0 0 80px rgba(192, 192, 192, 0.2),
-                  inset 0 -2px 20px rgba(255, 20, 147, 0.2);
-    }
-    .vital-card:nth-child(2) {
-      background: linear-gradient(135deg, rgba(255, 140, 0, 0.15), rgba(255, 69, 0, 0.08));
-      box-shadow: 0 0 40px rgba(255, 140, 0, 0.4), 
-                  0 0 80px rgba(192, 192, 192, 0.2),
-                  inset 0 -2px 20px rgba(255, 140, 0, 0.2);
-    }
-    .vital-card:nth-child(3) {
-      background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(30, 144, 255, 0.08));
-      box-shadow: 0 0 40px rgba(0, 191, 255, 0.4), 
-                  0 0 80px rgba(192, 192, 192, 0.2),
-                  inset 0 -2px 20px rgba(0, 191, 255, 0.2);
-    }
-    .vital-card:hover {
-      transform: translateY(-8px);
-    }
-    .vital-card:nth-child(1):hover {
-      box-shadow: 0 0 60px rgba(255, 20, 147, 0.6), 
-                  0 0 100px rgba(192, 192, 192, 0.3),
-                  inset 0 -2px 30px rgba(255, 20, 147, 0.3);
-    }
-    .vital-card:nth-child(2):hover {
-      box-shadow: 0 0 60px rgba(255, 140, 0, 0.6), 
-                  0 0 100px rgba(192, 192, 192, 0.3),
-                  inset 0 -2px 30px rgba(255, 140, 0, 0.3);
-    }
-    .vital-card:nth-child(3):hover {
-      box-shadow: 0 0 60px rgba(0, 191, 255, 0.6), 
-                  0 0 100px rgba(192, 192, 192, 0.3),
-                  inset 0 -2px 30px rgba(0, 191, 255, 0.3);
-    }
-    .vital-icon {
-      font-size: 72px;
-      margin-bottom: 16px;
-      display: block;
-      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    .vital-label {
-      font-size: 16px;
-      color: #FFFFFF;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-    .vital-sublabel {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: 8px;
-      font-weight: 500;
-      letter-spacing: -0.1px;
-    }
-    .primary-button {
-      font-family: 'Inter', sans-serif;
-      background: #FFFFFF;
-      color: #000000;
-      border: none;
-      padding: 16px 48px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      letter-spacing: -0.3px;
-    }
-    .primary-button:hover {
-      background: rgba(255, 255, 255, 0.9);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
-    }
-    .primary-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
 </head>
 
 <body>
 
   <!-- Welcome Page -->
-  
+
   <div class="app-container">
     <nav class="nav-bar">
       <div class="logo" id="app-title">SYNQ</div>
@@ -204,35 +61,10 @@
     </div>
   </div>
 
-  <script>
-          // Add haptic to vital cards
-      document.querySelectorAll('.vital-card').forEach(card => {
-        card.addEventListener('click', function(event) {
-          triggerHapticRipple(this, event);
-          const icon = this.querySelector('.vital-icon');
-          if (icon) {
-            triggerHapticGlow(icon);
-          }
-        });
-      });
-  </script>
-
-<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-<script src="{{ url_for('static', filename='shared.js') }}"></script>
-
-<script>
-  if (typeof initializeApp === 'function') {
-    initializeApp();
-  } else {
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof initializeApp === 'function') {
-        initializeApp();
-      }
-    });
-  }
-</script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
+  <script src="{{ url_for('static', filename='welcome.js') }}"></script>
 
 </body>
 
 </html>
-

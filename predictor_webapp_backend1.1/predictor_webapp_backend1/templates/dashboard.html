@@ -1,383 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Dashboard</title>
-	<!-- Google Fonts -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-  </style>
-	<!-- Shared and Page Styles -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
-  <script src="{{ url_for('static', filename='shared.js') }}"></script>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-
-	
-
-
-
-<style>
-		/* Dashboard Page */
-		.dashboard-section {
-			margin-bottom: 48px;
-		}
-
-		.section-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 32px;
-		}
-
-		.section-header-left h2 {
-			margin: 0;
-		}
-
-		.active-athletes-badge {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 10px 20px;
-			background: rgba(255, 255, 255, 0.05);
-			border: 1px solid rgba(255, 255, 255, 0.08);
-			border-radius: 10px;
-		}
-
-		.active-athletes-text {
-			font-size: 13px;
-			color: rgba(255, 255, 255, 0.6);
-			font-weight: 500;
-			letter-spacing: -0.2px;
-		}
-
-		.active-athletes-text strong {
-			color: #FFFFFF;
-			font-weight: 700;
-			font-size: 16px;
-			margin-left: 4px;
-		}
-
-		.section-title {
-			font-family: 'Inter', sans-serif;
-			font-size: 20px;
-			font-weight: 700;
-			color: #FFFFFF;
-			margin-bottom: 8px;
-			letter-spacing: -0.5px;
-		}
-
-		.section-description {
-			font-size: 14px;
-			color: rgba(255, 255, 255, 0.5);
-			margin-bottom: 24px;
-			letter-spacing: -0.2px;
-			font-weight: 400;
-		}
-
-		.status-cards-grid {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: 24px;
-			margin-bottom: 32px;
-		}
-    
-		.status-card {
-			background: rgba(255, 255, 255, 0.03);
-			border: 1px solid rgba(255, 255, 255, 0.08);
-			border-radius: 20px;
-			padding: 32px 24px;
-			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-			cursor: pointer;
-			position: relative;
-			overflow: hidden;
-		}
-    
-		.status-card::before {
-			content: '';
-			position: absolute;
-			inset: -2px;
-			border-radius: 16px;
-			padding: 2px;
-			background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-			-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-			-webkit-mask-composite: xor;
-			mask-composite: exclude;
-			opacity: 0;
-			transition: opacity 0.4s ease;
-		}
-    
-		.status-card-inner {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			gap: 12px;
-		}
-    
-		.status-3d-icon {
-			width: 80px;
-			height: 80px;
-			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-			filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-		}
-    
-		.status-3d-icon svg {
-			width: 100%;
-			height: 100%;
-		}
-    
-		.status-label {
-			font-family: 'Inter', sans-serif;
-			font-size: 14px;
-			font-weight: 700;
-			color: #FFFFFF;
-			letter-spacing: -0.2px;
-		}
-    
-		.status-count {
-			font-family: 'Inter', sans-serif;
-			font-size: 32px;
-			font-weight: 800;
-			color: #FFFFFF;
-			line-height: 1;
-			letter-spacing: -1px;
-		}
-    
-		.status-card:hover {
-			transform: translateY(-8px);
-		}
-    
-		.status-card:hover::before {
-			opacity: 1;
-		}
-    
-		.status-card:hover .status-3d-icon {
-			transform: scale(1.1) translateY(-5px);
-		}
-    
-		.status-card.status-optimal {
-			background: rgba(16, 185, 129, 0.05);
-			border-color: rgba(16, 185, 129, 0.2);
-			box-shadow: 0 0 30px rgba(16, 185, 129, 0.3),
-									0 0 60px rgba(16, 185, 129, 0.15),
-									inset 0 0 40px rgba(16, 185, 129, 0.08);
-		}
-
-		.status-card.status-optimal:hover {
-			background: rgba(16, 185, 129, 0.08);
-			border-color: rgba(16, 185, 129, 0.3);
-			box-shadow: 0 0 40px rgba(16, 185, 129, 0.4),
-									0 0 80px rgba(16, 185, 129, 0.2),
-									inset 0 0 60px rgba(16, 185, 129, 0.1);
-		}
-    
-		.status-card.status-moderate {
-			background: rgba(245, 158, 11, 0.05);
-			border-color: rgba(245, 158, 11, 0.2);
-			box-shadow: 0 0 30px rgba(245, 158, 11, 0.3),
-									0 0 60px rgba(245, 158, 11, 0.15),
-									inset 0 0 40px rgba(245, 158, 11, 0.08);
-		}
-
-		.status-card.status-moderate:hover {
-			background: rgba(245, 158, 11, 0.08);
-			border-color: rgba(245, 158, 11, 0.3);
-			box-shadow: 0 0 40px rgba(245, 158, 11, 0.4),
-									0 0 80px rgba(245, 158, 11, 0.2),
-									inset 0 0 60px rgba(245, 158, 11, 0.1);
-		}
-    
-		.status-card.status-fatigued {
-			background: rgba(239, 68, 68, 0.05);
-			border-color: rgba(239, 68, 68, 0.2);
-			box-shadow: 0 0 30px rgba(239, 68, 68, 0.3),
-									0 0 60px rgba(239, 68, 68, 0.15),
-									inset 0 0 40px rgba(239, 68, 68, 0.08);
-		}
-
-		.status-card.status-fatigued:hover {
-			background: rgba(239, 68, 68, 0.08);
-			border-color: rgba(239, 68, 68, 0.3);
-			box-shadow: 0 0 40px rgba(239, 68, 68, 0.4),
-									0 0 80px rgba(239, 68, 68, 0.2),
-									inset 0 0 60px rgba(239, 68, 68, 0.1);
-		}
-
-		.stat-icon {
-			font-size: 32px;
-			margin-bottom: 16px;
-			display: block;
-		}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 </head>
 
+<body>
 
-   <!-- Dashboard Page -->
+  <!-- Dashboard Page -->
   <div class="app-container">
-  <nav class="nav-bar">
-  <div class="logo" id="app-title">SYNQ</div>
+    <nav class="nav-bar">
+      <div class="logo" id="app-title">SYNQ</div>
       <div class="nav-links">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/onboarding">Features</a>
         <a class="nav-link active" href="/dashboard">Dashboard</a>
         <a class="nav-link" href="/athletes">Athletes</a>
-     </div>
-     </nav>
+      </div>
+    </nav>
     <main class="page" style="padding: 32px;">
       <h1 style="font-family: 'Inter', sans-serif; font-size: 40px; font-weight: 800; text-align: center; margin: 0 0 40px 0; letter-spacing: -2px; color: #FFFFFF;">Team Dashboard</h1>
-     <div class="dashboard-section">
-      <div class="section-header">
-       <div class="section-header-left">
-        <h2 class="section-title">Team Overview</h2>
-       </div>
-       <div class="active-athletes-badge"><span class="active-athletes-text">Active athletes: <strong id="total-athletes">0</strong></span>
-       </div>
+      <div class="dashboard-section">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2 class="section-title">Team Overview</h2>
+          </div>
+          <div class="active-athletes-badge">
+            <span class="active-athletes-text">Active athletes: <strong id="total-athletes">0</strong></span>
+          </div>
+        </div>
+        <div class="status-cards-grid">
+          <div class="status-card status-optimal" data-status="optimal" onclick="filterAthletesByStatus('Not Fatigued')">
+            <div class="status-card-inner">
+              <div class="status-3d-icon">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="greenGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#34D399;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="greenGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6EE7B7;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="greenGlow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(16, 185, 129, 0.2)" />
+                  <circle cx="100" cy="90" r="70" fill="url(#greenGrad1)" filter="url(#greenGlow)" />
+                  <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#greenGrad2)" opacity="0.6" />
+                  <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" />
+                  <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" />
+                  <path d="M 70 95 L 85 110 L 115 75" stroke="#FFFFFF" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+                </svg>
+              </div>
+              <div class="status-label">Not Fatigued</div>
+              <div class="status-count" id="normal-count">0</div>
+            </div>
+          </div>
+          <div class="status-card status-moderate" data-status="moderate" onclick="filterAthletesByStatus('Moderate')">
+            <div class="status-card-inner">
+              <div class="status-3d-icon">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="yellowGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#FBBF24;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="yellowGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#FCD34D;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="yellowGlow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(245, 158, 11, 0.2)" />
+                  <circle cx="100" cy="90" r="70" fill="url(#yellowGrad1)" filter="url(#yellowGlow)" />
+                  <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#yellowGrad2)" opacity="0.6" />
+                  <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" />
+                  <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" />
+                  <rect x="92" y="95" width="16" height="8" rx="4" fill="#FFFFFF" opacity="0.9" />
+                </svg>
+              </div>
+              <div class="status-label">Moderate</div>
+              <div class="status-count" id="elevated-count">0</div>
+            </div>
+          </div>
+          <div class="status-card status-fatigued" data-status="fatigued" onclick="filterAthletesByStatus('Fatigued')">
+            <div class="status-card-inner">
+              <div class="status-3d-icon">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="redGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#F87171;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="redGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#FCA5A5;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#F87171;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="redGlow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(239, 68, 68, 0.2)" />
+                  <circle cx="100" cy="90" r="70" fill="url(#redGrad1)" filter="url(#redGlow)" />
+                  <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#redGrad2)" opacity="0.6" />
+                  <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" />
+                  <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" />
+                  <path d="M 75 85 L 105 115 M 105 85 L 75 115" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.9" />
+                </svg>
+              </div>
+              <div class="status-label">Fatigued</div>
+              <div class="status-count" id="fatigued-count">0</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="status-cards-grid">
-       <div class="status-card status-optimal" data-status="optimal" onclick="filterAthletesByStatus('Not Fatigued')">
-        <div class="status-card-inner">
-         <div class="status-3d-icon">
-          <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
-            <lineargradient id="greenGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#34D399;stop-opacity:1" />
-             <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
-            </lineargradient>
-            <lineargradient id="greenGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#6EE7B7;stop-opacity:1" />
-             <stop offset="100%" style="stop-color:#34D399;stop-opacity:1" />
-            </lineargradient>
-            <filter id="greenGlow">
-             <fegaussianblur stddeviation="4" result="coloredBlur" />
-              <femerge>
-              <femergenode in="coloredBlur" />
-              <femergenode in="SourceGraphic" />
-             </femerge>
-            </filter>
-           </defs> <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(16, 185, 129, 0.2)" /> <circle cx="100" cy="90" r="70" fill="url(#greenGrad1)" filter="url(#greenGlow)" /> <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#greenGrad2)" opacity="0.6" /> <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" /> <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" /> <path d="M 70 95 L 85 110 L 115 75" stroke="#FFFFFF" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
-          </svg>
-         </div>
-         <div class="status-label">
-          Not Fatigued
-         </div>
-         <div class="status-count" id="normal-count">
-          0
-         </div>
-        </div>
-       </div>
-       <div class="status-card status-moderate" data-status="moderate" onclick="filterAthletesByStatus('Moderate')">
-        <div class="status-card-inner">
-         <div class="status-3d-icon">
-          <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
-            <lineargradient id="yellowGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#FBBF24;stop-opacity:1" />
-    
-             <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:1" />
-            </lineargradient>
-            <lineargradient id="yellowGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#FCD34D;stop-opacity:1" />
-             <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:1" />
-            </lineargradient>
-            <filter id="yellowGlow">
-             <fegaussianblur stddeviation="4" result="coloredBlur" />
-             <femerge>
-              <femergenode in="coloredBlur" />
-              <femergenode in="SourceGraphic" />
-             </femerge>
-            </filter>
-           </defs> <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(245, 158, 11, 0.2)" /> <circle cx="100" cy="90" r="70" fill="url(#yellowGrad1)" filter="url(#yellowGlow)" /> <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#yellowGrad2)" opacity="0.6" /> <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" /> <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" /> <rect x="92" y="95" width="16" height="8" rx="4" fill="#FFFFFF" opacity="0.9" />
-          </svg>
-         </div>
-         <div class="status-label">
-          Moderate
-         </div>
-         <div class="status-count" id="elevated-count">
-          0
-         </div>
-        </div>
-       </div>
-       <div class="status-card status-fatigued" data-status="fatigued" onclick="filterAthletesByStatus('Fatigued')">
-        <div class="status-card-inner">
-         <div class="status-3d-icon">
-          <svg viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
-            <lineargradient id="redGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#F87171;stop-opacity:1" />
-             <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
-            </lineargradient>
-            <lineargradient id="redGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-             <stop offset="0%" style="stop-color:#FCA5A5;stop-opacity:1" />
-             <stop offset="100%" style="stop-color:#F87171;stop-opacity:1" />
-            </lineargradient>
-            <filter id="redGlow">
-             <fegaussianblur stddeviation="4" result="coloredBlur" />
-             <femerge>
-              <femergenode in="coloredBlur" />
-              <femergenode in="SourceGraphic" />
-             </femerge>
-            </filter>
-           </defs> <ellipse cx="100" cy="160" rx="60" ry="15" fill="rgba(239, 68, 68, 0.2)" /> <circle cx="100" cy="90" r="70" fill="url(#redGrad1)" filter="url(#redGlow)" /> <ellipse cx="100" cy="70" rx="50" ry="25" fill="url(#redGrad2)" opacity="0.6" /> <circle cx="75" cy="65" r="8" fill="rgba(255, 255, 255, 0.9)" /> <circle cx="78" cy="68" r="3" fill="rgba(255, 255, 255, 0.6)" /> <path d="M 75 85 L 105 115 M 105 85 L 75 115" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.9" />
-          </svg>
-         </div>
-         <div class="status-label">
-          Fatigued
-         </div>
-         <div class="status-count" id="fatigued-count">
-          0
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
     </main>
+  </div>
 
-  <script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 
-
-function filterAthletesByStatus(status) {
-  window.location.href = '/athletes?filter=' + encodeURIComponent(status);
-}
-
-// Data SDK Handler for dashboard
-async function fetchAthletes() {
-  try {
-    const response = await fetch('/api/athletes');
-    if (!response.ok) throw new Error('Failed to fetch athletes');
-    const data = await response.json();
-    updateDashboardStats(data);
-  } catch (error) {
-    console.error('Error fetching athletes:', error);
-    updateDashboardStats([]);
-  }
-}
-
-// Initialize dashboard data
-document.addEventListener('DOMContentLoaded', () => {
-  fetchAthletes();
-});
-
-function updateDashboardStats(data) {
-      const totalElement = document.getElementById('total-athletes');
-      const normalElement = document.getElementById('normal-count');
-      const elevatedElement = document.getElementById('elevated-count');
-      const fatiguedElement = document.getElementById('fatigued-count');
-      
-      const safeData = data || [];
-      
-      if (totalElement) {
-        totalElement.textContent = safeData.length;
-      }
-      
-      const normalCount = safeData.filter(a => a.fatigue_status === 'Not Fatigued').length;
-      const elevatedCount = safeData.filter(a => a.fatigue_status === 'Moderate').length;
-      const fatiguedCount = safeData.filter(a => a.fatigue_status === 'Fatigued').length;
-      
-      if (normalElement) normalElement.textContent = normalCount;
-      if (elevatedElement) elevatedElement.textContent = elevatedCount;
-      if (fatiguedElement) fatiguedElement.textContent = fatiguedCount;
-    }
-
-  </script>
 </body>
 </html>

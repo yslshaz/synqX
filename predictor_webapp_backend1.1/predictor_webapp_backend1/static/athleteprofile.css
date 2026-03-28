@@ -1,0 +1,689 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+/* JARVIS ORBITAL INTERFACE */
+.jarvis-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 40px 20px 40px;
+  margin-bottom: 20px;
+  position: relative;
+  min-height: 550px;
+  background: #000000;
+}
+
+/* Comparison Panel */
+.comparison-panel {
+  position: absolute;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid currentColor;
+  border-radius: 20px;
+  padding: 24px;
+  width: 280px;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  box-shadow: 0 0 40px currentColor,
+              0 20px 60px rgba(0, 0, 0, 0.8);
+  z-index: 20;
+}
+
+.comparison-panel.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.comparison-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.comparison-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.comparison-close {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.comparison-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.comparison-stat {
+  margin-bottom: 16px;
+}
+
+.comparison-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.comparison-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comparison-value {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.comparison-value-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.comparison-value-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.comparison-change {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.comparison-change.positive {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+}
+
+.comparison-change.negative {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+.comparison-change.neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.comparison-arrow {
+  font-size: 14px;
+}
+
+.connecting-line {
+  position: absolute;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-dasharray: 5, 5;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* Particle System */
+.particle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 16px currentColor, 0 0 24px currentColor;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.particle.large {
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 20px currentColor, 0 0 32px currentColor;
+}
+
+@keyframes particle-flow-in {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.3);
+  }
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, -10px);
+  }
+  50% {
+    transform: translate(-5px, -20px);
+  }
+  75% {
+    transform: translate(-10px, -10px);
+  }
+}
+
+/* Warning Indicators */
+.warning-orbit {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 11;
+}
+
+.warning-icon {
+  position: absolute;
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px currentColor);
+  animation: warning-orbit 6s linear infinite;
+}
+
+@keyframes warning-orbit {
+  0% {
+    transform: rotate(0deg) translateX(130px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(130px) rotate(-360deg);
+  }
+}
+
+.warning-icon.warning-1 {
+  animation-delay: 0s;
+}
+
+.warning-icon.warning-2 {
+  animation-delay: -2s;
+}
+
+.warning-icon.warning-3 {
+  animation-delay: -4s;
+}
+
+/* Reactor Aura */
+.reactor-aura {
+  position: absolute;
+  inset: -70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 60%);
+  opacity: 0.22;
+  pointer-events: none;
+  animation: aura-pulse 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes aura-pulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(1.05);
+  }
+}
+
+.reactor-aura.intense {
+  animation: aura-pulse-intense 1s ease-in-out infinite;
+}
+
+@keyframes aura-pulse-intense {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+/* Shake animation for threshold crossing */
+@keyframes threshold-shake {
+  0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-50%, -50%) translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translate(-50%, -50%) translateX(5px); }
+}
+
+.shake-animation {
+  animation: threshold-shake 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Faster pulse when fatigued */
+@keyframes pulse-fast {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-12px);
+  }
+}
+
+.reactor-fatigued {
+  animation: pulse-fast 1.5s ease-in-out infinite !important;
+}
+
+/* Heat trail */
+.heat-trail {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor, transparent);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 9;
+}
+
+@keyframes trail-fade {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+/* Sparkline chart */
+.sparkline-container {
+  position: absolute;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border: 2px solid currentColor;
+  border-radius: 12px;
+  padding: 16px;
+  width: 200px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 0 30px currentColor, 0 10px 40px rgba(0, 0, 0, 0.8);
+  z-index: 30;
+}
+
+.sparkline-container.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.sparkline-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.sparkline-canvas {
+  width: 100%;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+}
+
+/* Burst animation for 100% energy */
+@keyframes energy-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+.energy-burst-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 20;
+}
+
+.energy-burst-ring.animate {
+  animation: energy-burst 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.celebration-particle {
+  position: absolute;
+  font-size: 24px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 25;
+}
+
+@keyframes celebration-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg);
+  }
+}
+
+.orbital-system {
+  position: relative;
+  width: 680px;
+  height: 680px;
+}
+
+/* Central Reactor Core */
+.central-reactor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  z-index: 10;
+  cursor: pointer;
+  animation: float-reactor 4.5s ease-in-out infinite;
+}
+
+@keyframes float-reactor {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px)   scale(1); }
+  40%       { transform: translate(-50%, -50%) translateY(-22px) scale(1.01); }
+  60%       { transform: translate(-50%, -50%) translateY(-20px) scale(1.01); }
+}
+
+/* Vibranium click effect */
+@keyframes vibranium-vibrate {
+  0%   { transform: translate(-50%,-50%) scale(1)    rotate(0deg);    filter: brightness(1); }
+  7%   { transform: translate(-54%,-50%) scale(1.07) rotate(2deg);    filter: brightness(1.8); }
+  14%  { transform: translate(-46%,-50%) scale(0.95) rotate(-2deg);   filter: brightness(2.2); }
+  21%  { transform: translate(-54%,-50%) scale(1.05) rotate(1.5deg);  filter: brightness(1.8); }
+  28%  { transform: translate(-47%,-50%) scale(0.97) rotate(-1deg);   filter: brightness(1.5); }
+  35%  { transform: translate(-52%,-50%) scale(1.03) rotate(0.5deg);  filter: brightness(1.3); }
+  50%  { transform: translate(-50%,-50%) scale(1.01) rotate(0deg);    filter: brightness(1.2); }
+  75%  { transform: translate(-50%,-50%) scale(1)    rotate(0deg);    filter: brightness(1.1); }
+  100% { transform: translate(-50%,-50%) scale(1)    rotate(0deg);    filter: brightness(1); }
+}
+
+.reactor-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 18px currentColor) drop-shadow(0 0 50px currentColor) drop-shadow(0 0 90px currentColor);
+}
+
+/* Orbital Data Rings - Positioned around sphere */
+.orbital-data-ring {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  animation: float-orbital 4.5s ease-in-out infinite;
+}
+
+@keyframes float-orbital {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+  50%       { transform: translate(-50%, -50%) translateY(-6px); }
+}
+
+/* Top Position (Heart Rate) */
+.orbital-top {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: -240px;
+  color: #A855F7;
+}
+
+/* Right Position (Temperature) */
+.orbital-right {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  margin-left: 240px;
+  color: #EC4899;
+  animation-delay: 1.5s;
+}
+
+/* Left Position (Blood Oxygen) */
+.orbital-left {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  margin-left: -240px;
+  color: #3B82F6;
+  animation-delay: 3s;
+}
+
+/* Energy ring spin — speed controlled by --ring-speed set from JS */
+#energy-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: energy-ring-spin var(--ring-speed, 6s) linear infinite;
+}
+
+@keyframes energy-ring-spin {
+  from { transform: rotate(-90deg); }
+  to   { transform: rotate(270deg); }
+}
+
+.orbital-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 28px currentColor);
+}
+
+/* Haptic Feedback Pulse Effects */
+@keyframes haptic-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  30% {
+    transform: scale(0.92);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  80% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 20px transparent;
+  }
+}
+
+@keyframes haptic-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes haptic-glow-burst {
+  0% {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 25px currentColor) brightness(1.3);
+  }
+  100% {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+}
+
+.haptic-active {
+  animation: haptic-pulse 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.haptic-ripple-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.haptic-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  opacity: 0.6;
+  animation: haptic-ripple 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+.haptic-glow {
+  animation: haptic-glow-burst 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced button interactions */
+.primary-button:active,
+.secondary-button:active,
+.add-athlete-button:active {
+  animation: haptic-pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 56px;
+  }
+
+  .page-title {
+    font-size: 36px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .nav-bar {
+    padding: 16px 24px;
+  }
+
+  .page {
+    padding: 24px 16px;
+  }
+
+  .nav-links {
+    gap: 4px;
+  }
+
+  .nav-link {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .vitals-preview {
+    gap: 24px;
+  }
+
+  .feature-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .trend-controls {
+    flex-direction: column;
+  }
+
+  .trend-tab {
+    width: 100%;
+  }
+
+  .status-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .orbital-system {
+    width: 100%;
+    max-width: 400px;
+    height: 500px;
+  }
+
+  .central-reactor {
+    width: 180px;
+    height: 180px;
+  }
+
+  .orbital-data-ring {
+    width: 120px;
+    height: 120px;
+  }
+}

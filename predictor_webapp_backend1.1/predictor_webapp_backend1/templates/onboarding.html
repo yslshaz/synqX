@@ -1,217 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About us SYNQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='onboarding.css') }}">
+</head>
 
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About us SYNQ </title>
-    <!-- Google Fonts -->
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-    </style>
-    <!-- Shared CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='shared.css') }}">
-
-   
-<style>@view-transition { navigation: auto; }</style>
-<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-<script src="{{ url_for('static', filename='shared.js') }}"></script>
-
-    <style>
-      .onboarding-content {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding-left: 32px;
-        padding-right: 32px;
-      }
-      .onboarding-header {
-        text-align: center;
-        margin-bottom: 64px;
-      }
-      .page-title {
-        font-family: 'Inter', sans-serif;
-        font-size: 48px;
-        font-weight: 800;
-        color: #FFFFFF;
-        margin-bottom: 16px;
-        letter-spacing: -1.5px;
-      }
-      .page-subtitle {
-        font-size: 16px;
-        color: rgba(255, 255, 255, 0.5);
-        letter-spacing: -0.2px;
-        font-weight: 400;
-      }
-      .feature-cards {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 48px;
-      }
-      .feature-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
-        padding: 32px;
-        display: flex;
-        gap: 24px;
-        align-items: start;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-      }
-      .feature-card::before {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        border-radius: 24px;
-        padding: 2px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-      }
-      .feature-card::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 24px;
-        padding: 1px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-      }
-      .feature-card:hover {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-                    0 0 80px rgba(255, 255, 255, 0.15),
-                    inset 0 0 60px rgba(255, 255, 255, 0.03);
-      }
-      .feature-card:hover::before {
-        opacity: 1;
-      }
-      .feature-icon {
-        font-size: 48px;
-        flex-shrink: 0;
-      }
-      .feature-content h3 {
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        color: #FFFFFF;
-        margin-bottom: 10px;
-        font-weight: 700;
-        letter-spacing: -0.4px;
-      }
-      .feature-content p {
-        color: rgba(255, 255, 255, 0.7);
-        line-height: 1.5;
-        font-size: 14px;
-        letter-spacing: -0.2px;
-        font-weight: 400;
-      }
-      .action-buttons {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-        margin-top: 32px;
-      }
-      .primary-button {
-        font-family: 'Inter', sans-serif;
-        background: #FFFFFF;
-        color: #000000;
-        border: none;
-        padding: 16px 48px;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        letter-spacing: -0.3px;
-      }
-      .primary-button:hover {
-        background: rgba(255, 255, 255, 0.9);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
-      }
-      .primary-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-      .secondary-button {
-        font-family: 'Inter', sans-serif;
-        background: transparent;
-        color: #FFFFFF;
-        border: 1px solid #FFFFFF;
-        padding: 16px 48px;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        letter-spacing: -0.3px;
-      }
-      .secondary-button:hover {
-        background: rgba(255,255,255,0.1);
-        color: #FFF;
-        border-color: #FFF;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
-      }
-      .secondary-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .feature-content p {
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.5;
-      font-size: 14px;
-      letter-spacing: -0.2px;
-      font-weight: 400;
-    }
-
-     .feature-content p {
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.5;
-      font-size: 14px;
-      letter-spacing: -0.2px;
-      font-weight: 400;
-    }
-    </style>
-  </head>
-
-
-  <body>
-    <div class="app-container">
-      <nav class="nav-bar">
-        <div class="logo" id="app-title">SYNQ</div>
-        <div class="nav-links">
+<body>
+  <div class="app-container">
+    <nav class="nav-bar">
+      <div class="logo" id="app-title">SYNQ</div>
+      <div class="nav-links">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link active" href="/onboarding">Features</a>
         <a class="nav-link" href="/dashboard">Dashboard</a>
         <a class="nav-link" href="/athletes">Athletes</a>
-        </div>
-      </nav>
+      </div>
+    </nav>
     <div id="page-content">
       <!-- Onboarding Page -->
       <main id="onboarding" class="page">
         <div class="onboarding-content">
           <div class="onboarding-header">
-            <h1 class="page-title" style="font-family: 'Inter', sans-serif;">How SYNQ Works</h1>
+            <h1 class="page-title">How SYNQ Works</h1>
             <p class="page-subtitle">Peak athlete's performance</p>
           </div>
           <div class="feature-cards">
@@ -239,49 +52,23 @@
             <div class="feature-card">
               <div class="feature-icon">👤</div>
               <div class="feature-content">
-                <h3>athlete Profiles</h3>
+                <h3>Athlete Profiles</h3>
                 <p>Individual profiles with baseline metrics, current status, and personalized AI recommendations.</p>
               </div>
             </div>
           </div>
           <div class="action-buttons">
             <a class="primary-button" href="/dashboard" style="display:inline-block;text-decoration:none;">View Dashboard</a>
-            <a class="secondary-button" href="/athletes" style="display:inline-block;text-decoration:none;">Manage athletes</a>
+            <a class="secondary-button" href="/athletes" style="display:inline-block;text-decoration:none;">Manage Athletes</a>
           </div>
         </div>
       </main>
     </div>
-    <script>
-      // Add haptic to feature cards
-      document.querySelectorAll('.feature-card').forEach(card => {
-        card.addEventListener('click', function(event) {
-          triggerHapticRipple(this, event);
-          const icon = this.querySelector('.feature-icon');
-          if (icon) {
-            triggerHapticGlow(icon);
-          }
-        });
-      });
-    </script>
+  </div>
 
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='shared.js') }}"></script>
+  <script src="{{ url_for('static', filename='onboarding.js') }}"></script>
 
-<script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-<script src="{{ url_for('static', filename='shared.js') }}"></script>
-
-<script>
-  if (typeof initializeApp === 'function') {
-    initializeApp();
-  } else {
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof initializeApp === 'function') {
-        initializeApp();
-      }
-    });
-  }
-</script>
-  </body>
-
-  </html>
-    
-   
-    
+</body>
+</html>
